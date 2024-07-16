@@ -1,6 +1,6 @@
 // Purpouse: Function that allows the user to sign in.
 
-import { getUserByEmail } from "../../models/userModel";
+const { getUserByEmail } = require ("../../models/userModel");
 
 
 async function signIn(User) {
@@ -15,4 +15,4 @@ async function signIn(User) {
 
 
 
-export default {signIn};
+module.exports = {signIn};

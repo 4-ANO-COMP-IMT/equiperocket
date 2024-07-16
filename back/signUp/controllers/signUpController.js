@@ -1,5 +1,6 @@
-import User from  '../entities/user.js';
-import {signUp} from '../usecases/signUp.js';
+const User = require('../entities/user.js');
+const { signUp } = require('../usecases/signUp.js');
+const amqp = require('amqplib');
 
 async function postUser(req, res){
     try {
@@ -9,15 +10,36 @@ async function postUser(req, res){
         let user = new User(email, password,name);
         const status = await signUp(user);
         if (status === true){
-            res.status(201);
-            return res.send("Usuário criado!");
+            await sendToQueue(user);
+            return res.send("Usuário criado!").status(201);
         }else{
-            res.status(400);
-            return res.send("Usuário já existe!");
+            return res.send("Usuário já existe!").status(400);
         }
     } catch (error) {
-       res.status(500);
-       return res.send(error.message);    
+      
+       return res.status(500).send(error.message);    
     }
 }
-export default {postUser};
+
+async function sendToQueue(user){
+    try {
+        const conn = await amqp.connect('amqp://localhost');
+        const channel = await conn.createChannel();
+        const queue = 'user_signup';
+
+        await channel.assertQueue(queue, 
+            {durable: false});
+        const msg = JSON.stringify(user);
+
+        channel.sendToQueue(queue, Buffer.from(msg));
+        console.log(' [x] Sent %s', msg);
+
+        setTimeout(() => {
+            conn.close();
+        }, 1000);
+
+    } catch (error) {
+        console.error("Erro ao enviar mensagem para a fila",error);
+    }
+}
+module.exports = {postUser};

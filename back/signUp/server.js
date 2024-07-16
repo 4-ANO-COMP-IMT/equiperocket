@@ -1,20 +1,20 @@
-import express, { json } from "express";
-import { config } from "dotenv";     
+const express = require("express");
+const { config } = require("dotenv");
 
-import router from "./routes/routes.js";
+const router = require("./routes/routes.js");
 
 config();
 
-import cors from "cors";
+const cors = require("cors");
 
 const app = express();
-app.use(json());
+app.use(express.json());
 app.use(cors({origin: "*"}));
  
 app.use("/", router);
 
 
-const port = process.env.PORT || 8000; 
+const port = process.env.PORT || 9000; 
 
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);

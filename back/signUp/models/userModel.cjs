@@ -1,6 +1,6 @@
-import { readFileSync, writeFileSync } from 'fs';
-import { join } from 'path';
-import User from '../entities/user.js';
+const { readFileSync, writeFileSync } = require('fs');
+const { join } = require('path');
+const User = require('../entities/user.js');
 
 const usersFilePath = join(__dirname, '../data/users.json');
 let users = JSON.parse(readFileSync(usersFilePath, "utf-8"));
@@ -24,8 +24,8 @@ function getUserByEmail(User) {
 
 
 
-export default {
-   addUser,
-   getUserByEmail
+module.exports = {
+    addUser,
+    getUserByEmail
 };
 

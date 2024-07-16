@@ -1,7 +1,9 @@
 const User = require( '../entities/user.js');
-const {signIn} = require('../usecases/user/signIn.js').default;
+const {signIn} = require('../usecases/user/signIn.js');
 const {generateToken} = require("../utils/tokenUtils.js");
 const {userProfile} = require("../usecases/user/userProfile.js");
+const amqp = require("amqplib");
+const {addUser} = require("../models/userModel.js");
 
 let user = new User();
 
@@ -36,6 +38,31 @@ async function getUser(req,res){
         return res.send(error.message);
     }
 }
+
+amqp.connect("amqp://localhost", async (error0, connection) => {
+    if (error0) {
+        throw error0;
+    }
+    await connection.createChannel(async(error1, channel) => {
+        if (error1) {
+            throw error1;
+        }
+        const queue = "user_signup";
+        await channel.assertQueue(queue, {
+            durable: false
+        });
+       await channel.consume(queue, (msg) => {
+            if (msg.content) {
+                const user = JSON.parse(msg.content.toString());
+                addUser(user);
+                console.log(" [x] Received %s", user.email);
+            }
+         
+        }, {
+            noAck: true
+        });
+    });
+});
 
 module.exports = {
     authUser,
