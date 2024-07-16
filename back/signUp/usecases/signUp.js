@@ -1,5 +1,5 @@
-const { addUser ,getUserByEmail } = require( "../../models/userModel");
-const User = require( "../../entities/user");
+import { addUser, getUserByEmail } from "../models/userModel";
+
 
 async function signUp(User) {   
     let filteredUser = await getUserByEmail(User); 
@@ -14,6 +14,6 @@ async function signUp(User) {
 
 
 
-module.exports = {
+export default {
     signUp
 };
