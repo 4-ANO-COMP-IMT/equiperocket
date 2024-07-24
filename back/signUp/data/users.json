@@ -8,5 +8,10 @@
     "email": "email@hotmail.com",
     "password": "senha",
     "name": "Zé "
+  },
+  "3": {
+    "email": "teste@teste.com.br",
+    "password": "senha",
+    "name": "João ninguem "
   }
 }

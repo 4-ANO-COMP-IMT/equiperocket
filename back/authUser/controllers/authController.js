@@ -8,13 +8,9 @@ const {subscribeToEvent} = require("../common/subscriber.js");
 const {publishEvent} = require("../common/publisher.js");
 
 async function initSubscriber(){
-    subscribeToEvent('user_authenticated', (message) => {
-        console.log('User authenticated event received:', message);
-        // Aqui você pode adicionar lógica para processar o evento, como atualizar logs ou contadores
-    });
     subscribeToEvent('user.created', (message) => {
         console.log('User created event received:', message);
-        // Aqui você pode adicionar lógica para processar o evento, como atualizar logs ou contadores
+        // TODO: Implementar a lógica de adicionar o usuário no banco de dados
     });
 }
 

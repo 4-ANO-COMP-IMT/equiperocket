@@ -2,7 +2,17 @@
 
 import  getCategory  from '../usecases/getCategory.js';
 import  getName  from '../usecases/getName.js';
+import { publishEvent } from '../common/publisher.js';
+import { subscribeToEvent } from '../common/subscriber.js';
 
+async function initSubscriber(){
+    subscribeToEvent('user_auth', (message) => {
+        console.log('User created event received:', message);
+        // TODO: Implementar a lógica de adicionar o usuário no banco de dados
+    });
+}
+
+initSubscriber();
 
 function getEatery(req, res){
     try {
