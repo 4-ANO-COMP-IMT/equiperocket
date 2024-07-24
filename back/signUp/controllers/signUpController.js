@@ -1,6 +1,7 @@
 const User = require('../entities/user.js');
 const { signUp } = require('../usecases/signUp.js');
-const amqp = require('amqplib');
+//const amqp = require('amqplib');
+const {publishEvent} = require('../routes/publisher.js');
 
 async function postUser(req, res){
     try {
@@ -10,18 +11,21 @@ async function postUser(req, res){
         let user = new User(email, password,name);
         const status = await signUp(user);
         if (status === true){
-            await sendToQueue(user);
+            //await sendToQueue(user);
+            await publishEvent('user.created', JSON.stringify(user));
             return res.send("Usuário criado!").status(201);
         }else{
+            await publishEvent('user.exists', JSON.stringify(user));
             return res.send("Usuário já existe!").status(400);
         }
+        
     } catch (error) {
       
        return res.status(500).send(error.message);    
     }
 }
 
-async function sendToQueue(user){
+/*async function sendToQueue(user){
     try {
         const conn = await amqp.connect('amqp://localhost');
         const channel = await conn.createChannel();
@@ -41,5 +45,5 @@ async function sendToQueue(user){
     } catch (error) {
         console.error("Erro ao enviar mensagem para a fila",error);
     }
-}
+}*/
 module.exports = {postUser};
