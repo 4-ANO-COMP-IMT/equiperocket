@@ -1,6 +1,7 @@
 const User = require('../entities/user.js');
 const { signUp } = require('../usecases/signUp.js');
 const {publishEvent} = require('../routes/publisher.js');
+const {subscribeToEvent} = require('../routes/subscriber.js');
 
 async function initSubscriber(){
     subscribeToEvent('user.exists', (message) => {
