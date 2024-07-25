@@ -16,6 +16,7 @@ async function initSubscriber(){
 initSubscriber();
 
 const createProfile = async () => {
+    //TODO: Implementar a lógica de adicionar o usuário no banco de dados
     try {
         const user = await createUser(profileData);
         if(user){
