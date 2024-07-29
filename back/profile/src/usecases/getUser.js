@@ -7,7 +7,7 @@ async function getUser(email){
         if(!profileModel){
             throw new Error("Usuário não encontrado");
         };
-        return profileModel.toEntity();
+        return profileModel;
 
     } catch (error) {
         return error.message;

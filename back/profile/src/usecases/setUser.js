@@ -6,7 +6,7 @@ async function setUser(email, updateData){
         if(!profileModel){
             throw new Error("Erro ao salvar usuário");
         }
-        return profileModel.toEntity();
+        return profileModel;
     } catch (error) {
         return error.message;
     }

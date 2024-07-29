@@ -6,8 +6,9 @@ async function publishEvent(queue,msg){
         const channel = await conn.createChannel();
         await channel.assertQueue(queue, 
             {durable: false});
-        channel.sendToQueue(queue, Buffer.from(msg));
-        console.log(' [x] Sent %s', msg);
+        let data = JSON.stringify(msg);
+        channel.sendToQueue(queue, Buffer.from(data));
+        console.log(' [x] Sent %s', data);
         setTimeout(() => {
             conn.close();
         }, 1000);

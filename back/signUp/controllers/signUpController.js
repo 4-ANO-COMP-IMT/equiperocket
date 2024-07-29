@@ -1,12 +1,9 @@
-const User = require('../entities/user.js');
 const { signUp } = require('../usecases/signUp.js');
-const {publishEvent} = require('../routes/publisher.js');
-const {subscribeToEvent} = require('../routes/subscriber.js');
+const {publishEvent} = require('../common/publisher.js');
+const {subscribeToEvent} = require('../common/subscriber.js');
 
 async function initSubscriber(){
-    subscribeToEvent('user.exists', (message) => {
-        console.log('User exists event received:', message);
-    });
+  
 }
 
 initSubscriber();
@@ -15,14 +12,16 @@ async function postUser(req, res){
     try {
         const email = req.body.email;
         const password = req.body.password;
-        const name = req.body.name;
-        let user = new User(email, password,name);
-        const status = await signUp(user);
-        if (status === true){
+        const name = req.body.name; 
+        let user = {email:email, 
+            password:password,
+            name:name};
+        const result = await signUp(user);
+        if (result){
             await publishEvent('user.created', JSON.stringify(user));
             return res.send("Usuário criado!").status(201);
         }else{
-            await publishEvent('user.exists', JSON.stringify(user));
+            await publishEvent('user.exists', "Usuário já existe!");
             return res.send("Usuário já existe!").status(400);
         }
         

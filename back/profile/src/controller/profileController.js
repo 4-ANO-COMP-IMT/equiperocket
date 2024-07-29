@@ -11,25 +11,23 @@ async function initSubscriber(){
         console.log('User created event received:', message);
         createProfile(message);
     });
+    subscribeToEvent('request.use', async (message) => {
+        console.log('Request all users event received:', message);
+        let user = await getUser(message.email);
+        await publishEvent('response.user', JSON.stringify(user));
+    });
 }
 
 initSubscriber();
 
-const createProfile = async () => {
+const createProfile = async (profileData) => {
     //TODO: Implementar a lógica de adicionar o usuário no banco de dados
     try {
         const user = await createUser(profileData);
-        if(user){
-            publishEvent("created.user", user);
-            
-        }else{
-        	
-        }
-        
-
+        publishEvent("created.user", user); 
     } catch (error) {
-        
-        return{ message: error.message };
+        console.error(`Erro ao criar perfil: ${error.message}`);
+        return(`Erro ao criar perfil: ${error.message}`);
     }
 };
 
@@ -38,7 +36,7 @@ const updateProfile = async (req, res) => {
     const updateData = req.body;
     try {
         const user = await setUser(email, updateData);
-        publishEvent("updatedUser", user);
+        publishEvent("updated.User", user);
         return res.status(200).json(user);
 
     } catch (error) {
