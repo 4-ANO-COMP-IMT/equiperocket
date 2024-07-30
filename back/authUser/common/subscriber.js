@@ -1,9 +1,16 @@
 const amqp = require('amqplib');
 
+let channel;
+async function getConnection(){
+    if(!channel){
+        const conn = await amqp.connect('amqp://localhost');
+        channel = await conn.createChannel();
+    }
+    return channel;
+}
 async function subscribeToEvent(queue,callback){
     try{
-        const conn = await amqp.connect('amqp://localhost');
-        const channel = await conn.createChannel();
+        const channel = await getConnection();
         await channel.assertQueue(queue, 
             {durable: false});
         console.log(' [*] Waiting for messages in %s. To exit press CTRL+C', queue);
@@ -17,5 +24,14 @@ async function subscribeToEvent(queue,callback){
         console.error("Erro ao enviar mensagem para a fila",error);
     }
 }
+async function purgeQueue(queue){
+    try{
+        const channel = await getConnection();
+        await channel.purgeQueue(queue);
+    }catch(error){
+        console.error("Erro ao limpar a fila",error);
+    }
+}
 
-module.exports = {subscribeToEvent};
+
+module.exports = {subscribeToEvent,purgeQueue};
