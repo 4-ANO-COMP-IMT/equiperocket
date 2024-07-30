@@ -2,8 +2,6 @@ const User = require( '../entities/user.js');
 const {signIn} = require('../usecases/user/signIn.js');
 const {generateToken} = require("../utils/tokenUtils.js");
 const {userProfile} = require("../usecases/user/userProfile.js");
-//const amqp = require("amqplib");
-//const {addUser} = require("../models/userModel.js");
 const {subscribeToEvent} = require("../common/subscriber.js");
 const {publishEvent} = require("../common/publisher.js");
 
