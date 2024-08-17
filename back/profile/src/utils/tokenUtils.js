@@ -1,14 +1,14 @@
-import verify  from 'jsonwebtoken';
+import jwt  from 'jsonwebtoken';
 
-const key = process.env.JWT_SECRET || 'mySecret';
+const key =  'mySecret';
 
 
 function verifyToken(token) {
    try{ 
-    const decoded = verify(token, key);
+    const decoded = jwt.verify(token, key);
     return decoded;
     }catch(err){
-        return;
+        return null;
     } 
 }
 

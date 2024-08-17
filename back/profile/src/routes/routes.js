@@ -1,10 +1,10 @@
 import Router from "express"
-import { updateProfile, getProfile } from "../controller/profileController.js" 
+import { updateProfile, getProfileData } from "../controller/profileController.js" 
 
 const router = Router()
 
 
-router.post("/profile", getProfile)
-router.put("/profile/:email", updateProfile)
+router.post("/profile", getProfileData)
+router.post("/profile/:email", updateProfile)
 
-export default Router
+export default router
