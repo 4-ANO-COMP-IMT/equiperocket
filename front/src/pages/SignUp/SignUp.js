@@ -16,7 +16,7 @@ const Signup = () => {
 
   const { signup } = useAuth();
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
     if (!email || !emailConf || !senha || !nome) {
       setError("Preencha todos os campos");
       return;
@@ -28,7 +28,7 @@ const Signup = () => {
       return;
     }
 
-    const res = signup(email, senha, nome);
+    const res = await signup(nome, email, senha);
 
     if (res) {
       setError(res);
@@ -47,25 +47,25 @@ const Signup = () => {
           type="name"
           placeholder="Digite seu Nome"
           value={nome}
-          onChange={(e) => [setNome(e.target.value), setError("")]}
+          onChange={(e) => setNome(e.target.value)}
         />
         <Input
           type="email"
           placeholder="Digite seu E-mail"
           value={email}
-          onChange={(e) => [setEmail(e.target.value), setError("")]}
+          onChange={(e) => setEmail(e.target.value)}
         />
         <Input
           type="email"
           placeholder="Confirme seu E-mail"
           value={emailConf}
-          onChange={(e) => [setEmailConf(e.target.value), setError("")]}
+          onChange={(e) => setEmailConf(e.target.value)}
         />
         <Input
           type="password"
           placeholder="Digite sua Senha"
           value={senha}
-          onChange={(e) => [setSenha(e.target.value), setError("")]}
+          onChange={(e) => setSenha(e.target.value)}
         />
         <C.Terms>
           <input
