@@ -1,4 +1,4 @@
-import getAllEatery from "../models/eateryModel.js";
+import getAllEatery from "../models/eatery.js";
 
 
 
