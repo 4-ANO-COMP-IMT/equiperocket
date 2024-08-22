@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 
-const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+const apiKey = process.env.GOOGLE_MAPS_API_KEY || "AIzaSyAbbXSodKwKrUfeSNZ-4tx9WBpG3wDqEA0";
 
 async function getCoordinates(endereco) {
     if(!apiKey){
@@ -28,4 +28,4 @@ async function getCoordinates(endereco) {
     throw new Error('Erro ao consultar coordenadas: ' + error.message);
   }
 }
-export default getCoordinates;
+export { getCoordinates };

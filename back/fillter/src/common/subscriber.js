@@ -1,4 +1,4 @@
-const amqp = require('amqplib');
+import  amqp  from 'amqplib';
 
 async function subscribeToEvent(queue,callback){
     try{
@@ -18,4 +18,4 @@ async function subscribeToEvent(queue,callback){
     }
 }
 
-module.exports = {subscribeToEvent};
+export {subscribeToEvent};

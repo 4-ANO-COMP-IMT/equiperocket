@@ -3,9 +3,9 @@
 import { getCategory, getName} from '../usecases/getters.js';
 import { publishEvent } from '../common/publisher.js';
 import { subscribeToEvent } from '../common/subscriber.js';
-import { getCep } from '../usecases/getCEP.js';
+import { getCEP } from '../usecases/getCEP.js';
 import { getCoordinates } from '../usecases/getCoordinates.js';  
-import { addEatery } from '../usecases/addEatery.js';
+import { setEatery } from '../usecases/setEatery.js';
 import Eatery from '../models/eatery.js';
 
 
@@ -56,7 +56,7 @@ async function addEatery(req, res){
         return res.status(400).json({error: "Missing parameters"});
     }
     try {
-        const fullAddress = await getCep(cep);
+        const fullAddress = await getCEP(cep);
         const address = `${fullAddress.logradouro}, 
             ${fullAddress.bairro},
             ${fullAddress.localidade}, 
@@ -72,7 +72,7 @@ async function addEatery(req, res){
             latitude,
             longitude
         };
-        const eatery = await addEatery(eateryData);
+        const eatery = await setEatery(eateryData);
         return res.status(201).json(eatery);
     } catch (error) {
         return res.status(500).json({error: error.message});
@@ -81,7 +81,7 @@ async function addEatery(req, res){
 async function getEateryByCategory(req, res){
     try {
         const category = req.params.category;
-        const eateries = Eatery.getCategory(category);
+        const eateries = getCategory(category);
         if(eateries){
             return res.status(200).json(eateries);
         }else{
@@ -107,4 +107,4 @@ async function getEateryByName(req, res){
     }
 }
 
-export default{ getEatery, getEateryNearby, getEateryById, addEatery, getEateryByCategory, getEateryByName};
+export { getEatery, getEateryNearby, getEateryById, addEatery, getEateryByCategory, getEateryByName};

@@ -8,4 +8,4 @@ async function getCEP(cep) {
         return error.message;
     }
 }
-export default getCEP;
+export { getCEP };

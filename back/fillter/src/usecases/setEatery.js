@@ -1,6 +1,6 @@
-import Eatery from "../models/eatery";
+import Eatery from '../models/eatery.js';
 
-async function addEatery(eateryData){
+async function setEatery(eateryData){
     try {
         const eateryDoc = new Eatery(eateryData);
         await eateryDoc.save();
@@ -9,4 +9,4 @@ async function addEatery(eateryData){
         return error.message;
     }
 };
-export  {addEatery};
+export  {setEatery};

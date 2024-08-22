@@ -1,4 +1,4 @@
-const amqp = require('amqplib');
+import amqp from 'amqplib';
 
 async function publishEvent(queue,msg){
     try {
@@ -16,4 +16,4 @@ async function publishEvent(queue,msg){
     }
 }
 
-module.exports = {publishEvent};
+export {publishEvent};
