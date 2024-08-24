@@ -1,5 +1,4 @@
 //Pegar as entidadese e os usecases para req e res e passar para as rotas
-
 import { getCategory, getName} from '../usecases/getters.js';
 import { publishEvent } from '../common/publisher.js';
 import { subscribeToEvent } from '../common/subscriber.js';
@@ -26,12 +25,30 @@ async function getEatery(req, res){
     }
 };
 async function getEateryNearby(req, res){
-    const {latitude, longitude,radius} = req.querry;
     try {
-        const nearby = Eatery.find({
-            latitude: {$gte: latitude - radius, $lte: latitude + radius},
-             longitude: {$gte: longitude - radius, $lte: longitude + radius}
+        const {latitude, longitude,radius} = req.query;
+        if(!latitude || !longitude || !radius){
+            return res.status(400).json({error: "Missing parameters"});
+        }
+        const userLat = parseFloat(latitude);
+        const userLong = parseFloat(longitude);
+        const userRadius = parseInt(radius);
+        
+
+        const nearby = await Eatery.find({
+            location: {
+                $near: {
+                    $geometry: {
+                        type: "Point",
+                        coordinates: [userLong, userLat]
+                    },
+                    $maxDistance: userRadius 
+                }
+            }
         });
+        if(nearby.length === 0){
+            return res.status(404).json({error: "Nenhum restaurante encontrado"});
+        }
         return res.status(200).json(nearby);
     } catch (error) {
         return res.status(500).json({error: error.message});

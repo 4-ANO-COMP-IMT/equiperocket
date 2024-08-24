@@ -6,10 +6,13 @@ const eaterySchema = new mongoose.Schema({
     cep: String,
     maxOcupancy: Number,
     address: String,
-    latitude: Number,
-    longitude: Number
+    location: {
+        type: {type: String, default: 'Point', enum: ['Point']},
+        coordinates: {type: [Number], required: true}
+    }
 });
 
+eaterySchema.index({location: '2dsphere'});
 let Eatery = mongoose.model('Eatery', eaterySchema);
 
 export default Eatery;
