@@ -26,13 +26,13 @@ async function getEatery(req, res){
 };
 async function getEateryNearby(req, res){
     try {
-        const {latitude, longitude,radius} = req.query;
-        if(!latitude || !longitude || !radius){
+        const {lat, long,rad} = req.query;
+        if(!lat || !long || !rad){
             return res.status(400).json({error: "Missing parameters"});
         }
-        const userLat = parseFloat(latitude);
-        const userLong = parseFloat(longitude);
-        const userRadius = parseInt(radius);
+        const userLat = parseFloat(lat);
+        const userLong = parseFloat(long);
+        const userRadius = parseInt(rad);
         
 
         const nearby = await Eatery.find({
@@ -69,8 +69,8 @@ async function getEateryById(req, res){
 };
 async function addEatery(req, res){
     try {
-        const {name, category, cep, maxOcupancy} = req.body;
-        if(!name || !category || !cep || !maxOcupancy){
+        const {id, name, category, cep, maxOcupancy, number} = req.body;
+        if(!name || !category || !cep || !maxOcupancy || !id || !number){
             return res.status(400).json({error: "Missing parameters"});
         }
         const fullAddress = await getCEP(cep);

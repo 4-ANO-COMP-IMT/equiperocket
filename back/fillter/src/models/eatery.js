@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const eaterySchema = new mongoose.Schema({
+    id: {type: String, required: true, unique: true},
     name: String,
     category: String,
     cep: String,
@@ -9,7 +10,8 @@ const eaterySchema = new mongoose.Schema({
     location: {
         type: {type: String, default: 'Point', enum: ['Point']},
         coordinates: {type: [Number], required: true}
-    }
+    },
+    number: Number
 });
 
 eaterySchema.index({location: '2dsphere'});
