@@ -1,7 +1,9 @@
 import axios from 'axios';
+import dotenv from 'dotenv';
 
+dotenv.config();
 
-const apiKey = process.env.GOOGLE_MAPS_API_KEY || "AIzaSyAbbXSodKwKrUfeSNZ-4tx9WBpG3wDqEA0";
+const apiKey = process.env.GOOGLE_MAPS_API_KEY;
 
 async function getCoordinates(endereco) {
     if(!apiKey){

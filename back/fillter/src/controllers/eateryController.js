@@ -68,17 +68,24 @@ async function getEateryById(req, res){
     }
 };
 async function addEatery(req, res){
-    const {name, category, cep, maxOcupancy} = req.body;
-    if(!name || !category || !cep || !maxOcupancy){
-        return res.status(400).json({error: "Missing parameters"});
-    }
     try {
+        const {name, category, cep, maxOcupancy} = req.body;
+        if(!name || !category || !cep || !maxOcupancy){
+            return res.status(400).json({error: "Missing parameters"});
+        }
         const fullAddress = await getCEP(cep);
         const address = `${fullAddress.logradouro}, 
             ${fullAddress.bairro},
             ${fullAddress.localidade}, 
             ${fullAddress.uf} , 
             ${fullAddress.cep}`;
+        const eateryExists = await Eatery.findOne({
+            name:name, 
+            address: address
+        });
+        if(eateryExists){
+            return res.status(409).json({error: "Restaurante já cadastrado"});
+        }
         const {latitude, longitude} = await getCoordinates(address);
         const eateryData = {
             name,
@@ -86,8 +93,10 @@ async function addEatery(req, res){
             cep,
             maxOcupancy,
             address,
-            latitude,
-            longitude
+            location: {
+                type: "Point",
+                coordinates: [longitude, latitude]
+            }
         };
         const eatery = await setEatery(eateryData);
         return res.status(201).json(eatery);
