@@ -1,14 +1,14 @@
-import logo from '../../imagens/logo.svg'
-import styled from 'styled-components'
+import logo from '../../assets/Images/logo.svg';
+import styled from 'styled-components';
 
 const LogoContainer = styled.div`
     display: flex;
-    font-size: 30px;
-`
+`;
 
 const LogoImage = styled.img`
-    margin-right: 10px;
-`
+    margin-right: 15px;
+    width: 120px; 
+`;
 
 function Logo() {
     return (
@@ -21,4 +21,4 @@ function Logo() {
     )
 }
 
-export default Logo
+export default Logo;
