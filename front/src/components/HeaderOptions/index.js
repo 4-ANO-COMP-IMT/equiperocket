@@ -25,8 +25,8 @@ const textoOpcoes = ['Restaurantes']; /* Adicionando mais opções */
 function HeaderOptions() {
     return (
         <Opcoes>
-            {textoOpcoes.map((texto) => (
-                  <Link to ={`/${texto.toLowerCase()}`}><Opcao><p>{texto}</p></Opcao></Link> 
+            {textoOpcoes.map((texto,index) => (
+                  <Link to ={`/${texto.toLowerCase()}`} key={index}><Opcao><p>{texto}</p></Opcao></Link> 
             ))}
         </Opcoes>
     );

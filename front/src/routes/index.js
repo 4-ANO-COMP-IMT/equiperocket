@@ -6,6 +6,7 @@ import Login from "../pages/Login/Login";
 import Signup from "../pages/SignUp/SignUp";
 import Header from "../components/Header";
 import Home from "../pages/Home";
+import Restaurants from "../pages/Restaurants";
 
 const Private = ({ Item }) => {
   const { signed } = useAuth();
@@ -18,6 +19,7 @@ const RoutesApp = () => {
     <BrowserRouter>
         <Header/>
         <Routes>
+          <Route path="/restaurantes" element={<Restaurants/>} />
           <Route exact path="/" element={<Home />} />
           <Route exact path="/userprofile" element={<Private Item={UserProfile} />} />
           <Route path="/login" element={<Login />} />
