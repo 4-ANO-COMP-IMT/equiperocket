@@ -2,31 +2,35 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 const Opcao = styled.li`
-    font-size: 18px; /* Tamanho de fonte maior */
+    font-size: 18px;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
     height: 100%;
-    padding: 0 15px; /* Mais espaçamento */
+    padding: 0 15px;
     cursor: pointer;
-    min-width: 150px; /* Mais largo */
-    color: #333; /* Cor ajustada */
+    min-width: 150px;
+    color: #333;
     font-weight: bold;
 `;
 
 const Opcoes = styled.ul`
     display: flex;
-    list-style: none; /* Remover marcadores */
+    list-style: none;
 `;
 
-const textoOpcoes = ['Restaurantes']; /* Adicionando mais opções */
+const textoOpcoes = ['Restaurantes'];
 
 function HeaderOptions() {
     return (
         <Opcoes>
-            {textoOpcoes.map((texto,index) => (
-                  <Link to ={`/${texto.toLowerCase()}`} key={index}><Opcao><p>{texto}</p></Opcao></Link> 
+            {textoOpcoes.map((texto, index) => (
+                <Opcao key={index}>
+                    <Link to={`/${texto.toLowerCase()}`}>
+                        <p>{texto}</p>
+                    </Link>
+                </Opcao>
             ))}
         </Opcoes>
     );
