@@ -1,5 +1,5 @@
 import express from "express";
-import dotenv from "dotenv";     
+import dotenv from "dotenv";
 import cors from "cors";
 import router from "./src/routes/routes.js";
 import mongoose from "mongoose";
@@ -19,21 +19,21 @@ mongoose.connect(dbUrl, options);
 const db = mongoose.connection;
 
 db.on('connected', () => {
-    console.log('Conectado ao MongoDB Atlas');
+  console.log('Conectado ao MongoDB Atlas');
 });
+
 db.on('error', (err) => {
-    console.error(`Erro ao conectar ao MongoDB Atlas: ${err.message}`);
-  });
-  
-  db.on('disconnected', () => {
-    console.log('Desconectado do MongoDB Atlas');
-  });
-  
+  console.error(`Erro ao conectar ao MongoDB Atlas: ${err.message}`);
+});
 
-app.use("/", router );
+db.on('disconnected', () => {
+  console.log('Desconectado do MongoDB Atlas');
+});
 
 
-const port = process.env.PORT || 6000; 
+app.use("/", router);
+
+const port = process.env.PORT || 8800;
 
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
