@@ -8,16 +8,25 @@ const UserProfile = () => {
   const { signout, user } = useAuth();
   const navigate = useNavigate();
 
+  if (!user) {
+    return <C.Container>Loading...</C.Container>;
+  }
+
   return (
     <C.Container>
-      <C.Title>Profile</C.Title>
-      <C.Label>Nome:</C.Label>
+      <C.ProfileCard>
+        <C.ProfileImage src="https://via.placeholder.com/120" alt="Profile" />
+        <C.Title>Profile</C.Title>
+        <C.Label>Nome:</C.Label>
         <C.Info>{user.name}</C.Info>
         <C.Label>Email:</C.Label>
         <C.Info>{user.email}</C.Info>
-      <Button Text="Sair" onClick={() => [signout(), navigate("/")]}>
-        Sair
-      </Button>
+        <C.ButtonContainer>
+          <Button Text="Sair" onClick={() => { signout(); navigate("/"); }}>
+            Sair
+          </Button>
+        </C.ButtonContainer>
+      </C.ProfileCard>
     </C.Container>
   );
 };
