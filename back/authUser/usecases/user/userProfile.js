@@ -1,5 +1,5 @@
 const {User} = require("../../entities/user.js");
-const {getUserByEmail} = require("../../models/userModel.js");
+const {getUserByEmail} = require("./signIn.js");
 
 async function userProfile(User){
     

@@ -1,10 +1,14 @@
 import { publishEvent } from "../common/publisher.js";
-import { subscribeToEvent } from "../common/subscriber.js";
+import { subscribeToEvent, purgeQueue } from "../common/subscriber.js";
 import { setUser } from "../usecases/setUser.js";
 import { getUser } from "../usecases/getUser.js";
 import { createUser } from "../usecases/createUser.js";    
+import { getProfile } from "../usecases/getProfile.js";
 
-
+let userToken = {
+    email: null,
+    token: null
+};
 
 async function initSubscriber(){
     subscribeToEvent('user.created', (message) => {
@@ -16,12 +20,24 @@ async function initSubscriber(){
         let user = await getUser(message.email);
         await publishEvent('response.user', JSON.stringify(user));
     });
+    subscribeToEvent('auth.user', async (message) => {
+        console.log('User auth event received:', message);
+        let user = await getUser(message.email);
+        await publishEvent('auth.res', JSON.stringify(user));
+    });
+    subscribeToEvent('auth.status', async (message) => {
+        console.log('Auth status event received:', message);
+        userToken = {
+            email: message.email,
+            token: message.token
+        };
+        return userToken;    
+    });
 }
 
 initSubscriber();
 
 const createProfile = async (profileData) => {
-    //TODO: Implementar a lógica de adicionar o usuário no banco de dados
     try {
         const user = await createUser(profileData);
         publishEvent("created.user", user); 
@@ -44,15 +60,22 @@ const updateProfile = async (req, res) => {
     }
 };
 
-const getProfile = async (req, res) => {
-    const email = req.params.email;
+const getProfileData = async (req, res) => {
+    const email = req.body.email;
     try {
-        const user = await getUser(email);
-        return res.status(200).json(user);
-
+        let profileData = await getProfile(email, userToken.token);
+        if (profileData && profileData.email && profileData.name) {
+            let response = {
+                email: profileData.email,
+                name: profileData.name
+            };
+            return res.status(200).json(response);
+        } else {
+            return res.status(401).send({ message: 'Usuário não autenticado.' });
+        }
     } catch (error) {
         return res.status(500).send({ message: error.message });
     }
 };
 
-export  { updateProfile, getProfile };
+export  { updateProfile, getProfileData };

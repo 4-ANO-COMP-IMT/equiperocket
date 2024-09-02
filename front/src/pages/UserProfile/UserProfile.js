@@ -8,6 +8,7 @@ const UserProfile = () => {
   const { signout, user } = useAuth();
   const navigate = useNavigate();
 
+
   return (
     <C.Container>
       <C.Title>Profile</C.Title>
@@ -18,6 +19,7 @@ const UserProfile = () => {
       <Button Text="Sair" onClick={() => [signout(), navigate("/")]}>
         Sair
       </Button>
+
     </C.Container>
   );
 };

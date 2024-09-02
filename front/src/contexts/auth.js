@@ -58,7 +58,9 @@ export const AuthProvider = ({ children }) => {
 
   const signup = async (name, email, password) => {
     const [data, error] = await handleApiRes(() =>
+
       axios.post('http://localhost:9000/sign-up', { name, email, password })
+
     );
     if (data) {
       const { token,user } = data;

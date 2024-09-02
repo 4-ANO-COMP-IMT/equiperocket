@@ -1,12 +1,14 @@
 import Router from "express";
-import getEatery  from "../controllers/eateryController.js";
+import {getEatery,getEateryNearby , getEateryById, addEatery}  from "../controllers/eateryController.js";
 
 
 const router = Router();
 
 // router.use(json());
+router.get("/restaurants:id",getEateryById);
+router.get("/restaurants",getEatery );
+router.get('/restaurants/nearby', getEateryNearby);
 
-router.get("/",getEatery );
-
+router.post('/restaurants', addEatery);
 
 export default router;
