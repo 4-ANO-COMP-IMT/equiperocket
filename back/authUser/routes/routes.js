@@ -7,7 +7,7 @@ const router = Router();
 
 router.use(bodyParser.json());
 
-router.get("/sign-in", authUser);
+router.post("/sign-in", authUser);
 router.get("/profile", authMiddlewere);
 
 
