@@ -22,17 +22,15 @@ const IconImage = styled.img`
 
 const icones = [
     { src: perfil, route: "/perfil" },
-    // Adicione outros ícones aqui, com suas respectivas rotas
+    
 ];
 
 function HeaderIcons() {
-    const token = localStorage.getItem('token') || sessionStorage.getItem('token'); // Verifica se há um token no localStorage ou sessionStorage
-
     return (
         <Icones>
             {icones.map((icone, index) => (
                 <Icone key={index}>
-                    <Link to={token ? icone.route : "/login"}>
+                    <Link to={icone.route}>
                         <IconImage src={icone.src} alt={`Icone ${index}`} />
                     </Link>
                 </Icone>

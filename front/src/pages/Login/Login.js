@@ -33,6 +33,7 @@ const Login = () => {
           }
 
           navigate("/perfil");
+          window.location.reload(); 
       } catch (err) {
           setError(err.message || "Erro ao conectar ao servidor. Tente novamente mais tarde.");
       }
