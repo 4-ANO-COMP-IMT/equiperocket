@@ -5,10 +5,6 @@ import { getUser } from "../usecases/getUser.js";
 import { createUser } from "../usecases/createUser.js";    
 import { getProfile } from "../usecases/getProfile.js";
 
-let userToken = {
-    email: null,
-    token: null
-};
 
 async function initSubscriber(){
     subscribeToEvent('user.created', (message) => {
@@ -20,19 +16,12 @@ async function initSubscriber(){
         let user = await getUser(message.email);
         await publishEvent('response.user', JSON.stringify(user));
     });
-    subscribeToEvent('auth.user', async (message) => {
+     subscribeToEvent('auth.user', async (message) => {
         console.log('User auth event received:', message);
         let user = await getUser(message.email);
         await publishEvent('auth.res', JSON.stringify(user));
     });
-    subscribeToEvent('auth.status', async (message) => {
-        console.log('Auth status event received:', message);
-        userToken = {
-            email: message.email,
-            token: message.token
-        };
-        return userToken;    
-    });
+  
 }
 
 initSubscriber();
@@ -60,10 +49,24 @@ const updateProfile = async (req, res) => {
     }
 };
 
+const handleAuthStatus = async (message) => {
+    let userToken = {
+        email: message.email,
+        token: message.token
+    };
+    console.log('Auth status event received:', userToken);
+    return userToken;
+};
+
 const getProfileData = async (req, res) => {
     const email = req.body.email;
+    let userToken;
+    subscribeToEvent('auth.status', async (message) => {
+        userToken = await handleAuthStatus(message);
+    });
+
     try {
-        let profileData = await getProfile(email, userToken.token);
+        let profileData = await getProfile(email, userToken?.token);
         if (profileData && profileData.email && profileData.name) {
             let response = {
                 email: profileData.email,
