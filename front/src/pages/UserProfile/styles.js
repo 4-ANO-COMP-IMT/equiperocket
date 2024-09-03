@@ -10,7 +10,6 @@ export const Container = styled.div`
   background-color: #f0f0f0;
 `;
 
-
 export const ProfileCard = styled.div`
   display: flex;
   flex-direction: column;
@@ -31,7 +30,6 @@ export const ProfileImage = styled.img`
   margin-bottom: 20px;
 `;
 
-
 export const Title = styled.h1`
   font-size: 36px;
   color: black;
@@ -39,7 +37,6 @@ export const Title = styled.h1`
 `;
 
 export const Label = styled.div`
-
   font-size: 1.5em;
   color: blue;
   font-weight: bold;
@@ -51,8 +48,13 @@ export const Info = styled.p`
   margin-bottom: 15px;
 `;
 
+export const Error = styled.div`
+  color: red;
+  font-size: 1.2em;
+  margin-bottom: 15px;
+  font-weight: bold;
+`;
 
 export const ButtonContainer = styled.div`
   margin-top: 20px;
 `;
-

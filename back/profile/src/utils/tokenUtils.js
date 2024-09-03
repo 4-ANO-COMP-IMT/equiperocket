@@ -8,7 +8,7 @@ function verifyToken(token) {
     const decoded = jwt.verify(token, key);
     return decoded;
     }catch(err){
-        return null;
+        return false;
     } 
 }
 

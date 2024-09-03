@@ -41,9 +41,9 @@ export const AuthProvider = ({ children }) => {
       const { token, user } = res.data;
       console.log(res);
       storeUserToken(email, token);
+      console.log(localStorage.getItem("user_token"))
       setUser({ name: user.name, email });
-      
-      console.log("here",user);
+      console.log(user)
 
       return null;
     }catch(error){
@@ -71,9 +71,31 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("user_token");
   };
 
+  const getProfileData = async () => {
+    const userToken = typeof window !== "undefined" ? localStorage.getItem("user_token") : null;
+    if (!userToken) {
+      return [null, "Usuário não autenticado"];
+    }
+  
+    const { email, token } = JSON.parse(userToken);
+  
+    try {
+      const res = await axios.post('http://localhost:8800/profile', 
+        { email, token }
+      );
+      const profileData = res.data;
+      console.log(profileData);
+      return [profileData, null];
+    } catch (error) {
+      console.error("Erro ao buscar perfil:", error);
+      return [null, error.response ? error.response.data.message : "Erro na requisição"];
+    }
+  };
+  
+
   return (
     <AuthContext.Provider
-      value={{ user, signed: !!user, signin, signup, signout }}
+      value={{ user, signed: !!user, signin, signup, signout, getProfileData }}
     >
       {children}
     </AuthContext.Provider>
