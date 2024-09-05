@@ -72,7 +72,7 @@ export const ButtonContainer = styled.div`
 `;
 
 export const Button = styled.button`
-  background-color: #007bff;
+  background-color: #8bf337;
   color: white;
   border: none;
   border-radius: 5px;

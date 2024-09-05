@@ -3,14 +3,6 @@ import axios from "axios";
 
 export const AuthContext = createContext({});
 
-const handleApiRes = async (apiCall) => {
-  try {
-    const res = await apiCall;
-    return [res.data, null];
-  } catch (error) {
-    return [null, error.response ? error.response.data.message : "Erro na requisição"];
-  }
-};
 
 const storeUserToken = (email, token) => {
   if (typeof window !== "undefined") {
@@ -52,20 +44,17 @@ export const AuthProvider = ({ children }) => {
 
   };
 
+ 
   const signup = async (name, email, password) => {
-    const [data, error] = await handleApiRes(() =>
-
-      axios.post('http://localhost:9000/sign-up', { name, email, password })
-
-    );
-    if (data) {
-      const { token,user } = data;
-      storeUserToken(email, token);
-      setUser({ name: user.name, email });
+    try {
+      await axios.post('http://localhost:9000/sign-up', { name, email, password });
+      return null; 
+    } catch (error) {
+   
+      return error.response?.data?.message || 'Erro ao cadastrar usuário';
     }
-    return error;
   };
-
+  
   const signout = () => {
     setUser(null);
     localStorage.removeItem("user_token");

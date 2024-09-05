@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Button from "../../components/Button/button";
 import useAuth from "../../hooks/useAuth";
 import * as C from "./styles";
 
