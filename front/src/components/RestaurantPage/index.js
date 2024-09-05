@@ -1,6 +1,46 @@
 import React, { useEffect, useState } from "react";
-import {  getLocation } from "../../services/locationService.js";
-import { getRestaurants, getNearby } from "../../services/restaurantService.js";
+import { getRestaurants } from "../../services/restaurantService.js";
+import styled from "styled-components";
+
+const Container = styled.div`
+  padding: 20px;
+  background-color: #f9f9f9;
+  min-height: 100vh;
+`;
+
+const Title = styled.h1`
+  text-align: center;
+  color: #333;
+`;
+
+const Grid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  justify-content: center;
+`;
+
+const RestaurantCard = styled.div`
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  margin: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+`;
+
+const RestaurantName = styled.h2`
+  margin: 0 0 10px 0;
+  font-size: 1.5rem;
+  color: #333;
+`;
+
+const RestaurantAddress = styled.p`
+  margin: 0;
+  font-size: 1rem;
+  color: #666;
+`;
+
 
 function RestaurantsPage(){
     const[restaurants, setRestaurants] = useState([]);
@@ -41,18 +81,21 @@ function RestaurantsPage(){
     }
 
     return (
-        <div>
-            <h1>Restaurantes Próximos</h1>
-            {restaurants.length > 0 ? (
-                <ul>
-                {restaurants.map(restaurant => (
-                  <li key={restaurant._id}> {restaurant.name} - {restaurant.address}</li>
-                ))}
-              </ul>
-            ) : (
-                <p>Nenhum restaurante encontrado.</p>
-            )}
-        </div>
+        <Container>
+        <Title>Restaurantes Próximos</Title>
+        {restaurants.length > 0 ? (
+          <Grid>
+            {restaurants.map(restaurant => (
+              <RestaurantCard key={restaurant._id}>
+                <RestaurantName>{restaurant.name}</RestaurantName>
+                <RestaurantAddress>{restaurant.address}</RestaurantAddress>
+              </RestaurantCard>
+            ))}
+          </Grid>
+        ) : (
+          <p>Nenhum restaurante encontrado.</p>
+        )}
+      </Container>
     );
     
        
