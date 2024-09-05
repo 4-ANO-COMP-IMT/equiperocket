@@ -41,7 +41,7 @@ const OccupancyDetail = styled.p`
   font-size: 1rem;
 `;
 
-const OccupancyInfo = ({ occupancyData, loading }) => {
+const OccupancyInfo = ({ occupancyData, loading }) => { 
   return (
     <OccupancyInfoWrapper>
       {loading ? (
