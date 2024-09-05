@@ -2,10 +2,10 @@
 
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
 import { getLocation } from '../../services/locationService.js';
 import OccupancyInfo from '../../components/OccupancyInfo';
 import ButtonGroup from '../../components/HomeButtonGroup';
+import { getNearby } from '../../services/restaurantService';
 
 const AppContainer = styled.div`
   width: 100vw;
@@ -37,38 +37,44 @@ function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    async function fetchRestaurants() {
-      try {
+  async function fetchRestaurants(){
+    try{
         const location = await getLocation();
-        
-        if (location.userAccepted) {
-          const response = await axios.get("http://localhost:6000/", {
-            params: {
-              lat: location.latitude,
-              long: location.longitude,
-              rad: 5000 // Ajuste o valor do raio conforme necessário
-            }
-          });
-          setRestaurants(response.data);
-        } else {
-          setRestaurants([]);
+
+        const response = await getNearby(location.latitude, location.longitude, 5000);
+        console.log(response);
+        if(!response){
+            throw new Error("Erro ao buscar restaurantes");
         }
-      } catch (error) {
+        if(response.length === 0){
+            throw new Error("Nenhum restaurante encontrado");
+        };               
+        
+        setRestaurants(response);
+       
+    }catch(error){
+        console.error(error);
+        
         setError(error);
-      } finally {
+    }finally{
         setLoading(false);
-      }
     }
-    
-    fetchRestaurants();
-  }, []);
+}
+useEffect(() => {
+  fetchRestaurants();
+}, []);
+
+// Função para atualizar os dados de ocupação
+const updateOccupancyData = () => {
+  setLoading(true);
+  fetchRestaurants();
+};
 
   return (
     <AppContainer>
       <Title>Verifique a Lotação dos Restaurantes</Title>
       <Description>Veja a ocupação em tempo real e escolha o melhor momento para sua visita.</Description>
-      <ButtonGroup onUpdate={() => window.location.reload()} />
+      <ButtonGroup onUpdate={updateOccupancyData} />
       <OccupancyInfo occupancyData={restaurants} loading={loading} />
       {error && <p>Erro ao carregar os dados: {error.message}</p>}
     </AppContainer>

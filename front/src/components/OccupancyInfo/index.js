@@ -13,6 +13,7 @@ const OccupancyItem = styled.div`
   font-size: 1.2rem;
 `;
 
+
 const OccupancyInfo = ({ occupancyData, loading }) => {
   return (
     <OccupancyInfoWrapper>
@@ -21,7 +22,10 @@ const OccupancyInfo = ({ occupancyData, loading }) => {
       ) : (
         occupancyData.map((restaurant, index) => (
           <OccupancyItem key={index}>
-            {restaurant.name}: {restaurant.occupancy} lotado
+            <h2>{restaurant.name} </h2>
+            <p>Categoria: {restaurant.category}</p>
+          <p>Endereço: {restaurant.address}</p>
+          <p>Ocupação: {restaurant.currentOccupancy}/ {restaurant.maxOcupancy} pessoas</p>
           </OccupancyItem>
         ))
       )}

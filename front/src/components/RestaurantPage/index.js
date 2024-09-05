@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {  getLocation } from "../../services/locationService.js";
-import axios from "axios";
+import { getRestaurants, getNearby } from "../../services/restaurantService.js";
 
 function RestaurantsPage(){
     const[restaurants, setRestaurants] = useState([]);
@@ -11,21 +11,20 @@ function RestaurantsPage(){
         console.log("Buscando restaurantes próximos...");
         async function fetchRestaurants(){
             try{
-                const location = await getLocation();
+                const response = await getRestaurants();
                 
-                if(location.userAccepted){
-                    const response = await axios.get("http://localhost:6000/", {
-                        params: {
-                            lat: location.latitude,
-                            long: location.longitude,
-                            rad: 5000 // Adicione um valor de raio como exemplo, pode ajustar conforme necessário
-                        }
-                    });
-                    setRestaurants(response.data);
-                }else{
-                    setRestaurants([]);
+                if(!response){
+                    throw new Error("Erro ao buscar restaurantes");
                 }
+                if(response.length === 0){
+                    throw new Error("Nenhum restaurante encontrado");
+                };               
+                
+                setRestaurants(response);
+               
             }catch(error){
+                console.error(error);
+                
                 setError(error);
             }finally{
                 setLoading(false);
@@ -46,10 +45,10 @@ function RestaurantsPage(){
             <h1>Restaurantes Próximos</h1>
             {restaurants.length > 0 ? (
                 <ul>
-                    {restaurants.map(restaurant => (
-                        <li key={restaurant.id}> {restaurant.name} - {restaurant.address}</li>
-                    ))}
-                </ul>
+                {restaurants.map(restaurant => (
+                  <li key={restaurant._id}> {restaurant.name} - {restaurant.address}</li>
+                ))}
+              </ul>
             ) : (
                 <p>Nenhum restaurante encontrado.</p>
             )}
