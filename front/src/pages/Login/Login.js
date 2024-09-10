@@ -41,8 +41,8 @@ const Login = () => {
 
   return (
     <C.Container>
-      <C.Label>Entre na Sua Conta</C.Label>
       <C.Content>
+      <C.Label>Entre na Sua Conta</C.Label>
         <Input
           type="email"
           placeholder="Digite seu E-mail"

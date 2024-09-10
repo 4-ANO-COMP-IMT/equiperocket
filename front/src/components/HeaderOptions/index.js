@@ -11,13 +11,29 @@ const Opcao = styled.li`
     padding: 0 15px;
     cursor: pointer;
     min-width: 150px;
-    color: #333;
+    color: #dcdcdc;
     font-weight: bold;
+    
+  
 `;
 
 const Opcoes = styled.ul`
     display: flex;
     list-style: none;
+    padding: 0;
+    margin: 0;
+`;
+
+const LinkEstilizado = styled(Link)`
+    text-decoration: none; 
+    color: #171412; 
+    
+    &:focus, &:visited, &:active {
+        color: #171412; 
+    }
+          &:hover {
+        color: #8bf337;
+    }
 `;
 
 const textoOpcoes = ['Restaurantes'];
@@ -27,9 +43,9 @@ function HeaderOptions() {
         <Opcoes>
             {textoOpcoes.map((texto, index) => (
                 <Opcao key={index}>
-                    <Link to={`/${texto.toLowerCase()}`}>
+                    <LinkEstilizado to={`/${texto.toLowerCase()}`}>
                         <p>{texto}</p>
-                    </Link>
+                    </LinkEstilizado>
                 </Opcao>
             ))}
         </Opcoes>
