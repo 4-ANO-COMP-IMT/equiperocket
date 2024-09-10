@@ -17,23 +17,34 @@ const Signup = () => {
   const { signup } = useAuth();
 
   const handleSignup = async () => {
+    const emailRegex = /\S+@\S+\.\S+/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;;
     if (!email || !emailConf || !senha || !nome) {
       setError("Preencha todos os campos");
       return;
     } else if (email !== emailConf) {
       setError("Os e-mails não são iguais");
       return;
-    } else if (!acceptTerms) {
+    } 
+    else if (!acceptTerms) {
       setError("Você deve aceitar os termos de uso para continuar");
       return;
+    } else if(!emailRegex.test(email)){
+      setError("Digite um e-mail válido");
+      return;
+    } else if (!passwordRegex.test(senha)){
+      setError("A senha deve ter no mínimo 8 caracteres, com pelo menos uma letra maiúscula, uma letra minúscula e um número");
+      return;
     }
-
+    
+    
     const res = await signup(nome, email, senha);
 
     if (res) {
       setError(res);
       return;
     }
+    
 
     alert("Usuário cadastrado com sucesso!");
     navigate("/perfil");
