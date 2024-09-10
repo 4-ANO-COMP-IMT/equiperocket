@@ -29,7 +29,7 @@ Abra o terminal e execute o seguinte comando para clonar o repositório do proje
 
 ```bash
 git clone <link do repo>
-
+```
 ### 2. Inicie o RabbitMQ
 
 Certifique-se de que os serviços do RabbitMQ estão ativos antes de executar o projeto. Para mais detalhes sobre como iniciar o RabbitMQ, consulte a documentação oficial.
@@ -39,38 +39,38 @@ Certifique-se de que os serviços do RabbitMQ estão ativos antes de executar o 
 Acesse a pasta do back-end:
 ```bash
 cd ./equiperocket/back
-
+```
 Dentro dessa pasta, acesse cada um dos serviços individualmente:
 
 authUser: 
 ```bash
 cd ./authuser
-
+```
 fillter: 
 ```bash
 cd ./fillter
-
+```
 profile: 
 ```bash
 cd ./profile
-
+```
 signUp: 
 ```bash
 cd ./signup 
-
+```
 inicie-os com o comando:
 ```bash
 npm run start
-
+```
 ### 4. Execução do Front-end
 Acesse a pasta do front-end:
 ```bash
 cd ./equiperocket/front
-
+```
 Em seguida, inicie o front-end com o comando:
 ```bash
 npm run start
-
+```
 
 
 
