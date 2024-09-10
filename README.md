@@ -2,9 +2,10 @@
 
 ## Descrição do Projeto
 
-O SpotSoftware é um sistema que oferece dois aplicativos principais: um para verificar a lotação de restaurantes em tempo real e outro para gerenciar mesas e recursos de restaurantes. 
+O SpotSoftware é uma solução inovadora que permite verificar a lotação de restaurantes em tempo real. Com nosso sistema, você pode:
 
-O objetivo é proporcionar uma experiência eficiente tanto para clientes quanto para gerentes de restaurantes, facilitando o controle de ocupação e melhorando a organização interna.
+- **Verificar a Lotação Atual:** Veja quantas mesas estão ocupadas e quantas estão disponíveis em diferentes restaurantes. 
+- **Planejar Sua Visita:** Com base nas informações de lotação, escolha o melhor momento para visitar o restaurante e evite esperas desnecessárias.
 
 ## Membros da Equipe
 
