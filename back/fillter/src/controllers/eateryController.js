@@ -46,6 +46,7 @@ async function getEateryNearby(req, res){
                 }
             }
         });
+    
         if(nearby.length === 0){
             return res.status(404).json({error: "Nenhum restaurante encontrado"});
         }

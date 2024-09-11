@@ -3,9 +3,9 @@ import Input from "../../components/Input/input";
 import Button from "../../components/Button/button";
 import * as C from "./styles";
 import { Link, useNavigate } from "react-router-dom";
-import useAuth from "../../hooks/useAuth";
+import useAuth from '../../hooks/useAuth';
 
-const Signin = () => {
+const Login = () => {
   const { signin } = useAuth();
   const navigate = useNavigate();
 
@@ -14,25 +14,35 @@ const Signin = () => {
   const [error, setError] = useState("");
 
   const handleLogin = async () => {
-    if (!email | !senha) {
-      setError("Preencha todos os campos");
-      return;
-    }
+      if (!email || !senha) {
+          setError("Preencha todos os campos");
+          return;
+      }
 
-    const res = await signin(email, senha);
+      const timeout = (ms) => new Promise((_, reject) => setTimeout(() => reject(new Error("Tempo de espera esgotado. Tente novamente mais tarde.")), ms));
 
-    if (res) {
-      setError(res);
-      return;
-    }
+      try {
+          const res = await Promise.race([
+              signin(email, senha),
+              timeout(5000) // Timeout de 5 segundos
+          ]);
 
-    navigate("/UserProfile");
+          if (!res) {
+              setError("Erro ao fazer login. Verifique suas credenciais.");
+              return;
+          }
+
+          navigate("/perfil");
+          window.location.reload(); 
+      } catch (err) {
+          setError(err.message || "Erro ao conectar ao servidor. Tente novamente mais tarde.");
+      }
   };
 
   return (
     <C.Container>
-      <C.Label>Entre na Sua Conta</C.Label>
       <C.Content>
+      <C.Label>Entre na Sua Conta</C.Label>
         <Input
           type="email"
           placeholder="Digite seu E-mail"
@@ -58,4 +68,4 @@ const Signin = () => {
   );
 };
 
-export default Signin;
+export default Login;

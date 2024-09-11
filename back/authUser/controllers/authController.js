@@ -13,11 +13,12 @@ async function initSubscriber(){
 }
 
 initSubscriber();
-let user = new User();
+
 
 async function authUser(req, res){
     try {
         const { email, password } = req.body;
+        let user = new User();
         user.email = email;
         user.password = password;
         let isAuthenticated = await signIn(user);

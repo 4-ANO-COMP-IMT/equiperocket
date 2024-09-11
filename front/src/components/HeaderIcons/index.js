@@ -22,7 +22,7 @@ const IconImage = styled.img`
 
 const icones = [
     { src: perfil, route: "/perfil" },
-    // Adicione outros ícones aqui, com suas respectivas rotas
+    
 ];
 
 function HeaderIcons() {

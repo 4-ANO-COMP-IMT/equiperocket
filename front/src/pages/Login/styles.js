@@ -7,7 +7,7 @@ export const Container = styled.div`
   flex-direction: column;
   gap: 30px;
   height: 100vh;
-  
+  background-color: #f8f9fa;
 `;
 
 export const Content = styled.div`
@@ -16,34 +16,37 @@ export const Content = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  width: 150%;
-  box-shadow: 0 1px 2px #0003;
-  background-color: white;
+  width: 100%;
   max-width: 450px;
-  max-height: 400px;
-  padding: 100px;
-  border-radius: 5px;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #171412;
 `;
 
 export const Label = styled.label`
-  font-size: 30px;
-  font-weight: 600;
-  color: #696969;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #dcdcdc;
+  margin-bottom: 20px;
+  text-align: center;
 `;
 
 export const LabelSignup = styled.label`
-  font-size: 16px;
-  color: #676767;
+  font-size: 1rem;
+  color: #dcdcdc;
+  text-align: center;
+  
   span {
-    
-    color: orange; 
+    color: #8bf337; 
   }
-
 `;
 
 export const labelError = styled.label`
-  font-size: 14px;
+  font-size: 1.1rem;
   color: red;
+  margin-bottom: 15px;
+  font-weight: bold;
 `;
 
 export const Strong = styled.strong`
@@ -51,6 +54,6 @@ export const Strong = styled.strong`
 
   a {
     text-decoration: none;
-    color: #676767;
+    color: #8bf337;
   }
 `;

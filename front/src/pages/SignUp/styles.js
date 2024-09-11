@@ -2,46 +2,49 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex-direction: column;
-  gap: 30px;
+  padding: 20px;
   height: 100vh;
-  
+  background-color: #f8f9fa;
 `;
 
 export const Content = styled.div`
-  gap: 20px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex-direction: column;
+  gap: 20px;
   width: 100%;
-  box-shadow: 0 1px 2px #0003;
-  background-color: white;
-  max-width: 500px;
-  padding: 50px;
-  border-radius: 5px;
+  max-width: 400px;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #171412;
 `;
 
 export const Label = styled.label`
-  font-size: 30px;
-  font-weight: 600;
-  color: #696969;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #dcdcdc;
+  margin-bottom: 20px;
+  text-align: center;
 `;
 
 export const LabelLogin = styled.label`
-  font-size: 16px;
-  color: #676767;
-    span {
-    
-    color: orange; 
+  font-size: 1rem;
+  color: #dcdcdc;
+  span {
+    color: #8bf337; 
   }
 `;
 
 export const labelError = styled.label`
-  font-size: 14px;
+  font-size: 1.1rem;
   color: red;
+  margin-bottom: 15px;
+  font-weight: bold;
 `;
 
 export const Strong = styled.strong`
@@ -49,7 +52,7 @@ export const Strong = styled.strong`
 
   a {
     text-decoration: none;
-    color: #676767;
+    color: #8bf337;
   }
 `;
 
@@ -59,7 +62,12 @@ export const Terms = styled.div`
   gap: 10px;
 
   span {
-    font-size: 14px;
-    color: #676767;
+    font-size: 1rem;
+    color: #dcdcdc;
+  }
+
+  input {
+    width: 20px;
+    height: 20px;
   }
 `;

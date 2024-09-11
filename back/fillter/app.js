@@ -9,7 +9,7 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
-app.use(cors({origin: "*"}));
+app.use(cors());
 app.use(bodyParser.json());
 
 const dbUrl = 'mongodb+srv://darkness:root@projlp2.3qlyony.mongodb.net/?retryWrites=true&w=majority&appName=ProjLP2'
@@ -33,7 +33,7 @@ db.on('error', (err) => {
 app.use("/", router );
 
 
-const port = process.env.PORT || 6000; 
+const port = 9090; 
 
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);

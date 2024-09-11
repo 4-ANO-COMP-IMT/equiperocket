@@ -69,6 +69,7 @@ const getProfileData = async (req, res) => {
                 email: profileData.email,
                 name: profileData.name
             };
+            
             return res.status(200).json(response);
         } else {
             return res.status(401).send({ message: 'Usuário não autenticado.' });

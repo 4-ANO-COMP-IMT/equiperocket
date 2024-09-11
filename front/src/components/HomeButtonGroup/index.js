@@ -28,7 +28,6 @@ const ButtonGroup = ({ onUpdate }) => {
   return (
     <ButtonGroupWrapper>
       <Button onClick={onUpdate}>Atualizar</Button>
-      <Button>Buscar por Localização</Button>
     </ButtonGroupWrapper>
   );
 };

@@ -6,7 +6,7 @@ const router = Router();
 
 // router.use(json());
 router.get("/restaurants:id",getEateryById);
-router.get("/restaurants",getEatery );
+router.post("/restaurants",getEatery );
 router.get('/restaurants/nearby', getEateryNearby);
 
 router.post('/restaurants', addEatery);

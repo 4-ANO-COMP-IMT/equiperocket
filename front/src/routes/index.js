@@ -22,12 +22,11 @@ const RoutesApp = () => {
 
         <Header/>
         <Routes>
-          <Route path="/restaurantes" element={<Restaurants/>} />
+          <Route exact path="/restaurantes" element={<Restaurants/>} />
           <Route exact path="/" element={<Home />} />
-          <Route exact path="/userprofile" element={<Private Item={UserProfile} />} />
-          <Route path="/login" element={<Login />} />
+          <Route exact path="/perfil" element={<Private Item={UserProfile} />} />
+          <Route exact path="/login" element={<Login />} />
           <Route exact path="/signup" element={<Signup />} />
-          <Route path="*" element={<Login />} />
         </Routes>
 
     </BrowserRouter>

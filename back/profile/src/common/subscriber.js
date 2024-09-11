@@ -29,6 +29,7 @@ async function purgeQueue(queue){
     try{
         const channel = await getConnection();
         await channel.purgeQueue(queue);
+        console.log(queue);
     }catch(error){
         console.error("Erro ao limpar a fila",error);
     }
