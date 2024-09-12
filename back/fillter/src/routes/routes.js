@@ -9,6 +9,6 @@ router.get("/restaurants:id",getEateryById);
 router.post("/restaurants",getEatery );
 router.get('/restaurants/nearby', getEateryNearby);
 
-router.post('/restaurants', addEatery);
+router.post('/restaurants/add', addEatery);
 
 export default router;
