@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 
 const eaterySchema = new mongoose.Schema({
-    id: {type: String, required: true, unique: true},
     name: String,
     category: String,
     cep: String,
