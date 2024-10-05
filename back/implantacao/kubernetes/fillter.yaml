@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fillter-deployment
+  labels:
+    app: fillter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fillter
+  template:
+    metadata:
+      labels:
+        app: fillter
+    spec:
+      containers:
+      - name: fillter
+        image: lucmigue/fillter
+        ports:
+        - containerPort: 9090
+        env:
+        - name: APP_ENV
+          value: "production"
+        - name: DATABASE_URL
+          value: "mongodb://fillter-db:27017/fillter"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fillter-service
+spec:
+  type: NodePort
+  selector:
+    app: fillter
+  ports:
+    - protocol: TCP
+      port: 9090
+      targetPort: 9090
+      nodePort: 30002
