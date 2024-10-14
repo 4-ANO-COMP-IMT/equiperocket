@@ -25,7 +25,7 @@ async function authUser(req, res){
         if (isAuthenticated === true){
             const token = generateToken(user);
             await publishEvent("auth.status", 
-                JSON.stringify({ email, token }));
+                JSON.stringify({ email, token, userType: user.userType }));
             return res.status(200).json({ token, message: "Usuário logado!" });
         } else {
             await publishEvent("auth.status", 

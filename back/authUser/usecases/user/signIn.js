@@ -1,5 +1,6 @@
 const { publishEvent } = require('../../common/publisher');
 const { subscribeToEvent, purgeQueue, unsubscribeFromEvent } = require('../../common/subscriber');
+const {verifyUserType} = require("../verifyUserType.js");
 
 const TIMEOUT_DURATION = 5000;
 
@@ -25,9 +26,10 @@ async function signIn(user) {
                     try {
                         const data = JSON.parse(msg);
                         if (data.email === user.email && data.password === user.password) {
-                            resolve(data);  // Usuário encontrado e autenticado
+                            const userType = verifyUserType(data.CPF,data.CNPJ); 
+                            resolve(data,userType);  
                         } else {
-                            resolve(false);  // Usuário não encontrado ou credenciais inválidas
+                            resolve(false); 
                         }
                         unsubscribeFromEvent('auth.res', onMessage);
                     } catch (error) {

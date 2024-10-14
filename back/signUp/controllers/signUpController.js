@@ -46,10 +46,10 @@ async function postRestaurant(req, res){
         };
         const result = await signUp(user);
         if (result){
-            await publishEvent('user.created', JSON.stringify(user));
+            await publishEvent('restaurant.created', JSON.stringify(user));
             return res.send("Usuário criado!").status(201);
         }else{
-            await publishEvent('user.exists', "Usuário já existe!");
+            await publishEvent('restaurant.exists', "Usuário já existe!");
             return res.send("Usuário já existe!").status(400);
         }
         
@@ -59,4 +59,4 @@ async function postRestaurant(req, res){
     }
 }
 
-module.exports = {postUser};
+module.exports = {postUser, postRestaurant};
