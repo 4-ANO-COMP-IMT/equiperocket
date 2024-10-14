@@ -6,6 +6,7 @@ const router = Router();
 //router.use(json());
 
 router.post("/sign-up", postUser);
+router.post("/sign-up-restaurant", postUser);
 
 
 
