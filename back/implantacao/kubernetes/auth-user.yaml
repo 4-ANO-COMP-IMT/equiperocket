@@ -19,6 +19,7 @@ spec:
         image: lucmigue/auth-user
         ports:
         - containerPort: 8000
+     
 
 ---
 apiVersion: v1

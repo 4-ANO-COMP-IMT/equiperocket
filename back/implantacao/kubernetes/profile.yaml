@@ -19,7 +19,10 @@ spec:
         image: lucmigue/profile
         ports:
         - containerPort: 8800
-
+        env:
+        - name: DATABASE_URL
+          value: "mongodb+srv://darkness:root@projlp2.3qlyony.mongodb.net/?retryWrites=true&w=majority&appName=ProjLP2"
+          
 ---
 apiVersion: v1
 kind: Service

@@ -20,10 +20,8 @@ spec:
         ports:
         - containerPort: 9090
         env:
-        - name: APP_ENV
-          value: "production"
         - name: DATABASE_URL
-          value: "mongodb://fillter-db:27017/fillter"
+          value: "mongodb+srv://darkness:root@projlp2.3qlyony.mongodb.net/?retryWrites=true&w=majority&appName=ProjLP2"
 ---
 apiVersion: v1
 kind: Service
