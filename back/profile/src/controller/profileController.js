@@ -37,6 +37,7 @@ async function initSubscriber(){
         };
         return userToken;    
     });
+    
 }
 
 initSubscriber();

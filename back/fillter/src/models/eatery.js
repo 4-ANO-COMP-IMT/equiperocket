@@ -9,8 +9,16 @@ const eaterySchema = new mongoose.Schema({
     location: {
         type: {type: String, default: 'Point', enum: ['Point']},
         coordinates: {type: [Number], required: true}
+
     },
-    number: Number
+    number: Number,
+    CNPJ:{
+        type: String
+    },
+    branchName:{
+        type: String,
+        unique: true
+    }
 });
 
 eaterySchema.index({location: '2dsphere'});
