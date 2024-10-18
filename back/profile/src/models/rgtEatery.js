@@ -13,5 +13,5 @@ const profileSchema = new mongoose.Schema({
     password: String
 });
 
-let rgtEatery = mongoose.model('Profile', profileSchema);
+let rgtEatery = mongoose.model('rgtEatery', profileSchema);
 export default rgtEatery;
