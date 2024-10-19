@@ -1,8 +1,10 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
+import 'package:front_flutter/pages/profilePage.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:geocoding/geocoding.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -48,7 +50,7 @@ class MyAppState extends ChangeNotifier {
 }
 
 
-// ...
+
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -71,6 +73,9 @@ class _MyHomePageState extends State<MyHomePage> {
         break;
       case 2:
         page = LocationPage();
+        break;
+      case 3: 
+        page = ProfilePage();
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
@@ -96,6 +101,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     NavigationRailDestination(
                       icon: Icon(Icons.location_on),
                       label: Text('Location'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.person),
+                      label: Text('Profile'),
                     ),
                   ],
                   selectedIndex: selectedIndex, //marca o item selecionado
