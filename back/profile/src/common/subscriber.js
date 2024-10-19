@@ -1,4 +1,4 @@
-import { connect } from 'amqplib';
+import amqp from 'amqplib';
 
 let channel;
 async function getConnection(){

@@ -1,4 +1,4 @@
-import { connect } from 'amqplib';
+import amqp from 'amqplib';
 
 async function publishEvent(queue,msg){
     try {
