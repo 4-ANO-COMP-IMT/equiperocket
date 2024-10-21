@@ -1,4 +1,5 @@
 import profile from "../models/profile.js";
+import rgtEatery from "../models/rgtEatery.js";
 
 
 async function createUser(profileData){
@@ -10,4 +11,14 @@ async function createUser(profileData){
         return error.message;
     }
 }
-export  {createUser};
+
+async function createEatery(eateryData){
+    try {
+       const eateryDoc = new rgtEatery(eateryData);
+       await eateryDoc.save();
+       return eateryDoc;
+    } catch (error) {
+        return error.message;
+    }
+}
+export  {createUser, createEatery};

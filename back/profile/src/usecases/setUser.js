@@ -1,10 +1,15 @@
 import profile from "../models/profile.js";
+import rgtEatery from "../models/rgtEatery.js";
 
-async function setUser(email, updateData){
+async function setUser(CPF, updateData){
     try {
-        const profileModel = await profile.findOneAndUpdate({ email }, updateData, { new: true });
+        const profileModel = await profile.findOneAndUpdate({ CPF }, updateData, { new: true });
         if(!profileModel){
-            throw new Error("Erro ao salvar usuário");
+            const eateryModel = await rgtEatery.findOneAndUpdate({ CNPJ }, updateData, { new: true });
+            if(!eateryModel){
+                throw new Error("Erro ao salvar usuário");
+            }
+            return eateryModel;
         }
         return profileModel;
     } catch (error) {

@@ -3,10 +3,14 @@ class User {
         this.email = email;
         this.password = password;
         this.name = name;
+        this.CPF = CPF;
+       
+
     }
     getEmail(){
         return this.email;
     }
+
 };
 
 

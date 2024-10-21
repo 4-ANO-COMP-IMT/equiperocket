@@ -133,5 +133,18 @@ async function getEateryByName(req, res){
         return res.status(500).json({error: error.message});
     }
 }
+async function getEateryByCNPJ(req,res) {
+    try{
+        const cnpj = req.params.cnpj;
+        const eateries = Eatery.find({CNPJ:cnpj});
+        if(eateries){
+            return res.status(200).json(eateries);
+        }else{
+            return res.status(404).json({error: "Restaurante não encontrado com esse CNPJ"});
+        }
+    }catch(error){
+        return res.status(500).json({error: error.message});
+    }
+}
 
-export { getEatery, getEateryNearby, getEateryById, addEatery, getEateryByCategory, getEateryByName};
+export { getEatery, getEateryNearby, getEateryById, addEatery, getEateryByCategory, getEateryByName, getEateryByCNPJ };

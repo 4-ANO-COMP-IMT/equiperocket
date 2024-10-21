@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(cors({origin: "*"}));
 app.use(bodyParser.json());
 
-const dbUrl = 'mongodb+srv://darkness:root@projlp2.3qlyony.mongodb.net/?retryWrites=true&w=majority&appName=ProjLP2'
+const dbUrl =  process.env.DATABASE_URL || 'mongodb+srv://darkness:root@projlp2.3qlyony.mongodb.net/?retryWrites=true&w=majority&appName=ProjLP2'
 const options = { serverApi: { version: '1', strict: true, deprecationErrors: true } };
 
 mongoose.connect(dbUrl, options);

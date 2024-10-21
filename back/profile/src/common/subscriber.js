@@ -1,9 +1,9 @@
-import { connect } from 'amqplib';
+import amqp from 'amqplib';
 
 let channel;
 async function getConnection(){
     if(!channel){
-        const conn = await connect('amqp://localhost');
+        const conn = await amqp.connect('amqp://rabbitmq-service:5672');
         channel = await conn.createChannel();
     }
     return channel;

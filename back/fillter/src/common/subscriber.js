@@ -2,7 +2,7 @@ import  amqp  from 'amqplib';
 
 async function subscribeToEvent(queue,callback){
     try{
-        const conn = await amqp.connect('amqp://localhost');
+        const conn = await amqp.connect('amqp://rabbitmq-service:5672');
         const channel = await conn.createChannel();
         await channel.assertQueue(queue, 
             {durable: false});
