@@ -1,0 +1,22 @@
+{
+    "1":{
+        "name":"Mcdonalds", 
+        "address":"Rua 1, 123", 
+        "category":"Fast Food "
+    },
+    "2":{
+        "name":"Outback ", 
+        "address":"Rua 2, 23", 
+        "category":"Australiana "
+    },
+    "3":{
+        "name":"Estrela ", 
+        "address":"Rua João Ramalho, 123", 
+        "category":"Churrascaria "
+    }, 
+    "4":{
+        "name":"Bar do Zé ", 
+        "address":"Rua 10, 54 ", 
+        "category":"Churrascaria"
+    }
+}
