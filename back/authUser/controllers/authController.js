@@ -5,14 +5,14 @@ const {generateToken} = require("../utils/tokenUtils.js");
 const {subscribeToEvent} = require("../common/subscriber.js");
 const {publishEvent} = require("../common/publisher.js");
 
-async function initSubscriber(){
-    subscribeToEvent('response.user', (message) => {
-        console.log('User created event received:', message);
+// async function initSubscriber(){
+//     subscribeToEvent('response.user', (message) => {
+//         console.log('User created event received:', message);
         
-    });
-}
+//     });
+// }
 
-initSubscriber();
+// initSubscriber();
 
 
 async function authUser(req, res){

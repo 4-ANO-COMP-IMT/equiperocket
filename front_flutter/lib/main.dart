@@ -1,9 +1,7 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:front_flutter/pages/profilePage.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
-import 'package:geocoding/geocoding.dart';
 
 
 void main() {
@@ -71,9 +69,9 @@ class _MyHomePageState extends State<MyHomePage> {
       case 1:
         page = FavoritesPage();
         break;
-      case 2:
-        page = LocationPage();
-        break;
+      // case 2:
+      //   page = RestaurantPage();
+      //   break;
       case 3: 
         page = ProfilePage();
         break;
@@ -98,10 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       icon: Icon(Icons.favorite),
                       label: Text('Favorites'),
                     ),
-                    NavigationRailDestination(
-                      icon: Icon(Icons.location_on),
-                      label: Text('Location'),
-                    ),
+                   
                     NavigationRailDestination(
                       icon: Icon(Icons.person),
                       label: Text('Profile'),
@@ -236,108 +231,5 @@ class FavoritesPage extends StatelessWidget {
   }
 }
 
-class LocationPage extends StatefulWidget {
-  @override
-  _LocationPageState createState() => _LocationPageState();
-}
 
-class _LocationPageState extends State<LocationPage> {
-  String? _currentAddress;
-  Position? _currentPosition;
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Localização do Usuário'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            if (_currentPosition != null)
-              Text(
-                'Localização: Lat: ${_currentPosition?.latitude}, Long: ${_currentPosition?.longitude}',
-                style: TextStyle(fontSize: 16),
-              ),
-            if (_currentAddress != null)
-              Text(
-                'Endereço: $_currentAddress',
-                style: TextStyle(fontSize: 16),
-              ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                _getCurrentLocation();
-              },
-              child: Text('Obter Localização'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                _getAddressFromLatLng(_currentPosition!);
-              } 
-            , child: Text('Obter Endereço'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> _getCurrentLocation() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    // Verifica se o serviço de localização está habilitado
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('O serviço de localização está desativado.');
-    }
-
-    // Verifica as permissões de localização
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Permissão de localização negada.');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error('Permissão de localização negada permanentemente.');
-    }
-
-    // Obtém a localização atual
-    Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
-
-    setState(() {
-      _currentPosition = position;
-    });
-
-    // Converte as coordenadas em um endereço legível
-    _getAddressFromLatLng(position);
-  }
-
-  Future<void> _getAddressFromLatLng(Position position) async {
-    try {
-      print(position.latitude);
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-        position.latitude,
-        position.longitude,
-      );
-      print("placemarks: ");
-      Placemark place = placemarks[0];
-      print("place: $place");
-      setState(() {
-        _currentAddress =
-            '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
-      });
-    } catch (e) {
-      print(e);
-    }
-  }
-}
