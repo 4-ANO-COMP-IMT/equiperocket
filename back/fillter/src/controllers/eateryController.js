@@ -8,10 +8,13 @@ import { setEatery } from '../usecases/setEatery.js';
 import Eatery from '../models/eatery.js';
 
 
+let userType = null;
 async function initSubscriber(){
     subscribeToEvent('user_auth', (message) => {
+        userType = message.type;
         console.log('User created event received:', message);
     });
+    
 }
 
 initSubscriber();
@@ -70,8 +73,11 @@ async function getEateryById(req, res){
 };
 async function addEatery(req, res){
     try {
-        const {id, name, category, cep, maxOcupancy, number} = req.body;
-        if(!name || !category || !cep || !maxOcupancy || !id || !number){
+        if(userType !== 'restaurant'){
+            return res.status(403).json({error: "Usuário não autorizado"});
+        }
+        const {id, name, category, cep, maxOcupancy, number, cnpj, branchName} = req.body;
+        if(!name || !category || !cep || !maxOcupancy || !id || !number || !cnpj || !branchName){
             return res.status(400).json({error: "Missing parameters"});
         }
         const fullAddress = await getCEP(cep);
@@ -82,7 +88,8 @@ async function addEatery(req, res){
             ${fullAddress.cep}`;
         const eateryExists = await Eatery.findOne({
             name:name, 
-            address: address
+            address: address,
+            branchName: branchName
         });
         if(eateryExists){
             return res.status(409).json({error: "Restaurante já cadastrado"});
@@ -97,7 +104,11 @@ async function addEatery(req, res){
             location: {
                 type: "Point",
                 coordinates: [longitude, latitude]
-            }
+            },
+            cnpj,
+            branchName,
+            atualOcupancy: 0
+
         };
         const eatery = await setEatery(eateryData);
         return res.status(201).json(eatery);
@@ -146,5 +157,25 @@ async function getEateryByCNPJ(req,res) {
         return res.status(500).json({error: error.message});
     }
 }
-
-export { getEatery, getEateryNearby, getEateryById, addEatery, getEateryByCategory, getEateryByName, getEateryByCNPJ };
+async function updateOcuancy(req, res){
+    try {
+        const {cnpj, ocupancy} = req.body;
+        if(!cnpj || !ocupancy){
+            return res.status(400).json({error: "Missing parameters"});
+        }
+        if(userType !== 'restaurant'){
+            return res.status(403).json({error: "Usuário não autorizado"});
+        }
+        let eatery = updateOcuancy(cnpj, ocupancy);
+        if(eatery === null){
+            return res.status(404).json({error: "Restaurante não encontrado"});
+        }
+        
+        publishEvent('ocupancy_updated', {cnpj, ocupancy});
+        return res.status(200).json(eatery);
+    } catch (error) {
+        return res.status(500).json({error: error.message});
+    }
+    
+}
+export { getEatery, getEateryNearby, getEateryById, addEatery, getEateryByCategory, getEateryByName, getEateryByCNPJ,updateOcuancy}; 
