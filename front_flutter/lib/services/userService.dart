@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;  
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -36,7 +37,7 @@ class LoginAlbum {
       password: json['password'],
     );
   }
-  Future<String?> singIn() async {
+  Future<LoginResponse?> singIn() async {
     try{
       final response = await http.post(
         Uri.parse('http://localhost:30001/sign-in'),
@@ -54,22 +55,29 @@ class LoginAlbum {
 
         const storage = FlutterSecureStorage();
         await storage.write(key: 'user_token', value: loginResponse.token);
-        return null;
+        return loginResponse;
       } else {
         throw Exception(jsonDecode(response.body)['message'] ?? 'Erro ao fazer o login');
       }
     }catch(e){
-      return "Erro ao fazer o login: $e";
+      throw Exception("Erro ao fazer o login: $e");
     }
     
   }
 }
-
-
-class RestaurantUserAlbum {
+class LogOut{
+  final storage = FlutterSecureStorage();
+  Future<String?> logOut() async {
+    try {
+      await storage.delete(key: 'user_token');
+      return null;
+    } catch (e) {
+      throw Exception("Erro ao fazer o login: $e");
+    }
+    
+  }
 
 }
-
 class SignUpAlbum {
   final String name;
   final String email;
@@ -135,4 +143,52 @@ class SignUpAlbum {
       return "Erro ao fazer o cadastro: $e";
     }
   }
+}
+
+class UserAlbum{
+  final storage = FlutterSecureStorage();
+  Future<Map<String, dynamic>?> getUser() async { 
+    try {
+      final userToken = await storage.read(key: 'user_token');
+      if (userToken == null) {
+        return {
+          'data': null,
+          'error': 'Token não encontrado',
+        };
+      }
+      Map<String, dynamic> tokenData = jsonDecode(userToken);
+      String email = tokenData['email'];
+      String token = tokenData['token'];
+      String type = tokenData['type'];
+      final response = await http.post(
+        Uri.parse('http://localhost:30000/user'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'email': email,
+          'token': token,
+          'type':  type,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        return {
+          'data': responseData,
+          'error': null,
+        };
+      } else {
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        return {
+          'data': null,
+          'error': responseBody['message'] ?? 'Erro ao buscar o usuário',
+        };
+      }
+
+    }catch(e){
+      throw Exception("Erro ao buscar o usuário: $e");
+    }
+  }
+
 }
