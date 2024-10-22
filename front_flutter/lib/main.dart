@@ -2,6 +2,7 @@ import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:front_flutter/pages/profilePage.dart';
 import 'package:provider/provider.dart';
+import 'package:front_flutter/pages/restaurantPage.dart';
 
 
 void main() {
@@ -69,10 +70,10 @@ class _MyHomePageState extends State<MyHomePage> {
       case 1:
         page = FavoritesPage();
         break;
-      // case 2:
-      //   page = RestaurantPage();
-      //   break;
-      case 3: 
+       case 3:
+          page = RestaurantPage();
+          break;
+      case 2: 
         page = ProfilePage();
         break;
       default:
@@ -100,6 +101,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     NavigationRailDestination(
                       icon: Icon(Icons.person),
                       label: Text('Profile'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.restaurant),
+                      label: Text('Restaurantes'),
                     ),
                   ],
                   selectedIndex: selectedIndex, //marca o item selecionado
