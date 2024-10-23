@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:front_flutter/pages/profilePage.dart';
 import 'package:front_flutter/services/userService.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
@@ -15,13 +16,17 @@ class _LoginPageState extends State<LoginPage> {
   bool isLoading = false;
   String? error;
 
-  Future<void> login() async {
+  Future<void> login(email , password) async {
+    print(emailController);
+    print(passwordController);  
     setState(() {
       isLoading = true; // Iniciar o estado de carregamento
       error = null; // Limpar mensagem de erro
     });
+    
     final email = emailController.text;
     final password = passwordController.text;
+    print(email + "a");
 
     if (email.isEmpty || password.isEmpty) {
       setState(() {
@@ -32,10 +37,15 @@ class _LoginPageState extends State<LoginPage> {
     }
     try{
       final loginService = LoginAlbum(email: email, password: password);
+      print(loginService);
       final loginResponse = await loginService.singIn(email, password);
-      
+      print(loginResponse);
       if(loginResponse != null && mounted){
-        Navigator.pushNamed(context, '/profile');
+       Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => ProfilePage()),
+            (Route<dynamic> route) => false,
+       );
       }
     }catch(e){
       setState(() {
@@ -77,19 +87,20 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             const SizedBox(height: 30),
-            const CupertinoTextField(
+            CupertinoTextField(
               cursorColor: Colors.pinkAccent,
-              padding: EdgeInsets.all(15),
+              padding: const EdgeInsets.all(15),
               placeholder: 'Email',
-              placeholderStyle: TextStyle(
+              controller: emailController,
+              placeholderStyle: const TextStyle(
                 color: Colors.white70,
                 fontSize: 20,
               ),
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 20,
               ),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white10,
                 borderRadius: BorderRadius.all(
                   Radius.circular(7),
@@ -97,19 +108,20 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             const SizedBox(height: 5),
-            const CupertinoTextField(
+            CupertinoTextField(
+              controller: passwordController ,
               cursorColor: Colors.pinkAccent,
-              padding: EdgeInsets.all(15),
+              padding: const EdgeInsets.all(15),
               placeholder: 'Senha',
-              placeholderStyle: TextStyle(
+              placeholderStyle: const TextStyle(
                 color: Colors.white70,
                 fontSize: 20,
               ),
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 20,
               ),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white10,
                 borderRadius: BorderRadius.all(
                   Radius.circular(7),
@@ -132,7 +144,8 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 onPressed: () {
                   if(!isLoading){
-                    login();
+                    login(emailController, passwordController);
+                    print('Acessando...');
                   }
                 },
               ),

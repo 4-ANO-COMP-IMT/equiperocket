@@ -33,6 +33,8 @@ class LoginAlbum {
   
   Future<LoginResponse?> singIn(email, password) async {
     try{
+      print(email);
+      print(password);
       final response = await http.post(
         Uri.parse('http://localhost:30001/sign-in'),
         headers: <String, String>{
@@ -43,10 +45,11 @@ class LoginAlbum {
           'password': password,
         }),
       );
+     
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
+        print(responseData);
         final loginResponse = LoginResponse.fromJson(responseData);
-
         const storage = FlutterSecureStorage();
         await storage.write(key: 'user_token', value: loginResponse.token);
         return loginResponse;
@@ -155,7 +158,7 @@ class UserAlbum{
       String token = tokenData['token'];
       String type = tokenData['type'];
       final response = await http.post(
-        Uri.parse('http://localhost:30000/user'),
+        Uri.parse('http://localhost:30000/getProfileData'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
