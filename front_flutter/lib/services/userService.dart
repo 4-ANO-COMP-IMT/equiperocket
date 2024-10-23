@@ -31,13 +31,7 @@ class LoginAlbum {
     required this.password,
   });
   
-  factory LoginAlbum.fromJson(Map<String, dynamic> json) {
-    return LoginAlbum(
-      email: json['email'],
-      password: json['password'],
-    );
-  }
-  Future<LoginResponse?> singIn() async {
+  Future<LoginResponse?> singIn(email, password) async {
     try{
       final response = await http.post(
         Uri.parse('http://localhost:30001/sign-in'),
