@@ -1,6 +1,7 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:front_flutter/pages/profilePage.dart';
+import 'package:front_flutter/pages/signUpPage.dart';
 import 'package:provider/provider.dart';
 import 'package:front_flutter/pages/restaurantPage.dart';
 
@@ -67,14 +68,14 @@ class _MyHomePageState extends State<MyHomePage> {
       case 0:
         page = GeneratorPage();
         break;
-      case 1:
-        page = FavoritesPage();
-        break;
-       case 3:
+      case 2:
           page = RestaurantPage();
           break;
-      case 2: 
+      case 1: 
         page = ProfilePage();
+        break;
+      case 3: 
+        page = SignUpPage();
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
@@ -94,17 +95,16 @@ class _MyHomePageState extends State<MyHomePage> {
                       label: Text('Home'),
                     ),
                     NavigationRailDestination(
-                      icon: Icon(Icons.favorite),
-                      label: Text('Favorites'),
-                    ),
-                   
-                    NavigationRailDestination(
                       icon: Icon(Icons.person),
                       label: Text('Profile'),
                     ),
                     NavigationRailDestination(
                       icon: Icon(Icons.restaurant),
                       label: Text('Restaurantes'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.person_add),
+                      label: Text('Cadastro'),
                     ),
                   ],
                   selectedIndex: selectedIndex, //marca o item selecionado

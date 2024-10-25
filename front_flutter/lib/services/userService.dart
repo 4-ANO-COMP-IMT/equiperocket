@@ -104,6 +104,7 @@ class SignUpAlbum {
           'cpf': cpf,
         }),
       );
+
       if (response.statusCode == 200) {
         return null;
       } else {
@@ -112,6 +113,7 @@ class SignUpAlbum {
       }
         
     } catch (e) {
+      print("Erro ao fazer o cadastro: $e");
       return "Erro ao fazer o cadastro: $e";
     }
   } 
