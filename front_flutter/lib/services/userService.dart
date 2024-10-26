@@ -31,10 +31,8 @@ class LoginAlbum {
     required this.password,
   });
   
-  Future<LoginResponse?> singIn(email, password) async {
+  Future<LoginResponse?> singIn() async {
     try{
-      print(email);
-      print(password);
       final response = await http.post(
         Uri.parse('http://localhost:30001/sign-in'),
         headers: <String, String>{

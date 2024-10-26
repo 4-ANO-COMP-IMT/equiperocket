@@ -118,7 +118,7 @@ async function addEatery(req, res){
 };
 async function getEateryByCategory(req, res){
     try {
-        const category = req.params.category;
+        const category = req.body.category;
         const eateries = getCategory(category);
         if(eateries){
             return res.status(200).json(eateries);
@@ -132,7 +132,7 @@ async function getEateryByCategory(req, res){
 }
 async function getEateryByName(req, res){
     try {
-        const name = req.params.name;
+        const name = req.body.name;
         const eateries = Eatery.getName(name);
         if(eateries){
             return res.status(200).json(eateries);
@@ -146,7 +146,7 @@ async function getEateryByName(req, res){
 }
 async function getEateryByCNPJ(req,res) {
     try{
-        const cnpj = req.params.cnpj;
+        const cnpj = req.body.cnpj;
         const eateries = Eatery.find({CNPJ:cnpj});
         if(eateries){
             return res.status(200).json(eateries);

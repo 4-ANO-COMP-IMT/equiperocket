@@ -66,4 +66,27 @@ class Restaurantservice {
       print('Erro ao atualizar a ocupação: $error');
     }
   }
+
+  Future<List<dynamic>> getRestaurantsByCNPJ(String cnpj) async {
+    try{
+      final response = await http.post(Uri.parse("$baseUrl/restaurants"),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'cnpj': cnpj,
+        }),
+      );
+      if(response.statusCode == 200){
+        final result = jsonDecode(response.body);
+        return result;
+      }else{
+        throw Exception("Failed to load restaurants: ${response.statusCode}");
+      }
+    }catch(e){
+      print(e);
+      throw Exception("Failed to load restaurants");
+    }
+  }
+
 }

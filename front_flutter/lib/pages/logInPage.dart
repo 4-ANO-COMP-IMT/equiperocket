@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:front_flutter/main.dart';
 import 'package:front_flutter/pages/profilePage.dart';
 import 'package:front_flutter/services/userService.dart';
 
@@ -16,9 +17,8 @@ class _LoginPageState extends State<LoginPage> {
   bool isLoading = false;
   String? error;
 
-  Future<void> login(email , password) async {
-    print(emailController);
-    print(passwordController);  
+  Future<void> login() async {
+     
     setState(() {
       isLoading = true; // Iniciar o estado de carregamento
       error = null; // Limpar mensagem de erro
@@ -26,20 +26,21 @@ class _LoginPageState extends State<LoginPage> {
     
     final email = emailController.text;
     final password = passwordController.text;
-    print(email + "a");
-
-    if (email.isEmpty || password.isEmpty) {
-      setState(() {
-        error = 'Preencha todos os campos';
-        isLoading = false;
-      });
-      return;
-    }
+        
     try{
-      final loginService = LoginAlbum(email: email, password: password);
-      print(loginService);
-      final loginResponse = await loginService.singIn(email, password);
-      print(loginResponse);
+
+      if (email.isEmpty || password.isEmpty) {
+        setState(() {
+          error = 'Preencha todos os campos';
+          isLoading = false;
+        });
+        return;
+      }
+      final loginService = LoginAlbum(
+        email: email, 
+        password: password
+        );
+      final loginResponse = await loginService.singIn();
       if(loginResponse != null && mounted){
        Navigator.pushAndRemoveUntil(
             context,
@@ -49,8 +50,8 @@ class _LoginPageState extends State<LoginPage> {
       }
     }catch(e){
       setState(() {
-        error = e.toString();
-        isLoading = false;
+          error = 'Erro ao fazer login: ${e.toString()}';
+          isLoading = false;
       });
     }
   }
@@ -62,9 +63,18 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+        leading:  IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pushAndRemoveUntil(
+              context, 
+              MaterialPageRoute(builder: (context) => MyHomePage()), 
+              (Route<dynamic> route) => false
+            );
+          },
+        ),
       ),
       body: Container(
-        width: MediaQuery.of(context).size.width,
         padding: const EdgeInsets.all(27),
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -144,7 +154,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 onPressed: () {
                   if(!isLoading){
-                    login(emailController, passwordController);
+                    login();
                     print('Acessando...');
                   }
                 },
@@ -172,7 +182,11 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/register');
+                  Navigator.pushAndRemoveUntil(
+                    context, 
+                    MaterialPageRoute(builder: (context) => ProfilePage()), 
+                    (Route<dynamic> route) => false
+                 );
                 },
               ),
             ),
