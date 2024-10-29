@@ -27,7 +27,7 @@ async function signIn(user) {
                         const data = JSON.parse(msg);
                         if (data.email === user.email && data.password === user.password) {
                             const userType = verifyUserType(data.CPF,data.CNPJ); 
-                            resolve(data,userType);  
+                            resolve({ data, userType });  
                         } else {
                             resolve(false); 
                         }
@@ -42,8 +42,7 @@ async function signIn(user) {
             }), 
             timeout
         ]);
-
-        return response ? true : false;
+        return response || false;
 
     } catch (error) {
         console.error('Erro ao buscar usuário por email:', error.message);

@@ -47,6 +47,7 @@ async function postRestaurant(req, res){
         const result = await signUp(user);
         if (result){
             await publishEvent('restaurant.created', JSON.stringify(user));
+            console.log(JSON.stringify(user));
             return res.send("Usuário criado!").status(201);
         }else{
             await publishEvent('restaurant.exists', "Usuário já existe!");

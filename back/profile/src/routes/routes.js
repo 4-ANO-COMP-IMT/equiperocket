@@ -4,7 +4,7 @@ import { updateProfile, getProfileData } from "../controller/profileController.j
 const router = Router()
 
 
-router.post("/profile", getProfileData)
+router.get("/profile", getProfileData)
 router.post("/profile/:email", updateProfile)
 
 export default router

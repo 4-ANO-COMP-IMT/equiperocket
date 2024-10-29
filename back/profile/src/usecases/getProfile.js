@@ -24,6 +24,7 @@ async function getProfile(email,token){
                         if (verify) {
                             const user = await getUser(email);
                             console.log(user);
+
                             resolve(user);
                         } else {
                             reject(new Error('Usuário não autenticado.'));

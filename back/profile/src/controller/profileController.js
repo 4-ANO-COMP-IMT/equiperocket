@@ -2,8 +2,9 @@ import { publishEvent } from "../common/publisher.js";
 import { subscribeToEvent, purgeQueue } from "../common/subscriber.js";
 import { setUser } from "../usecases/setUser.js";
 import { getUser } from "../usecases/getUser.js";
-import { createUser } from "../usecases/createUser.js";    
+import { createUser,createEatery } from "../usecases/createUser.js";    
 import { getProfile } from "../usecases/getProfile.js";
+import { verifyUserType } from "../usecases/verifyUserType.js";
 
 let userToken = {
     email: null,
@@ -33,7 +34,8 @@ async function initSubscriber(){
         console.log('Auth status event received:', message);
         userToken = {
             email: message.email,
-            token: message.token
+            token: message.token,
+            type: message.userType
         };
         return userToken;    
     });
@@ -76,27 +78,26 @@ const updateProfile = async (req, res) => {
 };
 
 const getProfileData = async (req, res) => {
-    const email = req.body.email;
+    const { email } = req.body;
+    const token = req.headers.authorization?.split(' ')[1];
+    console.log(email, token);
     try {
-        let profileData = await getProfile(email, userToken.token);
+        const profileData = await getProfile(email, token);
+        let userType = verifyUserType(profileData.CPF, profileData.CNPJ);
         if (profileData && profileData.email && profileData.name) {
             let response = {
                 email: profileData.email,
                 name: profileData.name,
-                userType: profileData.userType
+                userType: userType
             };
-            if(profileData.userType === 'user'){
-                response = {
-                    ...response,
-                    cpf: profileData.cpf
-                };
-            };
-            if(profileData.userType === 'restaurant'){
-                response = {
-                    ...response,
-                    cnpj: profileData.cnpj
-                };
-            };
+            console.log(response)
+         
+            if (userType === 'user') {
+                response.CPF = profileData.CPF;
+            } else if (userType === 'restaurant') {
+                response.CNPJ = profileData.CNPJ;
+            }
+            console.log(response)
             return res.status(200).json(response);
         } else {
             return res.status(401).send({ message: 'Usuário não autenticado.' });

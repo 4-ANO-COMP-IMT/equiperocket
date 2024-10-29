@@ -4,7 +4,7 @@ let channel;
 let consumerTags = {};
 async function getConnection() {
     if (!channel) {
-        const conn = await amqp.connect('amqp://rabbitmq-service:5672');
+        const conn = await amqp.connect('amqp://localhost:5672');
         conn.on('error', (err) => {
             console.error('Erro de conexão:', err.message);
             channel = null; 

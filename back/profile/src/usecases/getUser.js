@@ -3,9 +3,9 @@ import rgtEatery from "../models/rgtEatery.js";
 
 async function getUser(email){
     try {
-        const profileModel = await profile.findOne({email,CPF});
+        const profileModel = await profile.findOne({email});
         if(!profileModel){
-            const eateryModel = await rgtEatery.findOne({email,CNPJ});
+            const eateryModel = await rgtEatery.findOne({email});
             return eateryModel; 
         };
         if(!eateryModel && !profileModel){
