@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:front_flutter/pages/logInPage.dart';
 import 'package:front_flutter/services/userService.dart';
 
-class SignUpPage extends StatefulWidget {
+class SignUpResPage extends StatefulWidget {
   @override
-  State<SignUpPage> createState() => _SignUpPageState();
+  State<SignUpResPage> createState() => _SignUpPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _SignUpPageState extends State<SignUpResPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController(); 
   final nameController = TextEditingController();

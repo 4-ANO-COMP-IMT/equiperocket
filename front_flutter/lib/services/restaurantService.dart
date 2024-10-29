@@ -69,7 +69,7 @@ class Restaurantservice {
 
   Future<List<dynamic>> getRestaurantsByCNPJ(String cnpj) async {
     try{
-      final response = await http.post(Uri.parse("$baseUrl/restaurants"),
+      final response = await http.post(Uri.parse("$baseUrl/restaurants/cnpj"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },

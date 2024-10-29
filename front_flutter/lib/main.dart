@@ -2,6 +2,7 @@ import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:front_flutter/pages/profilePage.dart';
 import 'package:front_flutter/pages/signUpPage.dart';
+import 'package:front_flutter/pages/sign_up_page_restaurant.dart';
 import 'package:provider/provider.dart';
 import 'package:front_flutter/pages/restaurantPage.dart';
 
@@ -77,6 +78,9 @@ class _MyHomePageState extends State<MyHomePage> {
       case 3: 
         page = SignUpPage();
         break;
+      case 4: 
+        page = SignUpResPage();
+        break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }
@@ -105,6 +109,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     NavigationRailDestination(
                       icon: Icon(Icons.person_add),
                       label: Text('Cadastro'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.restaurant_menu),
+                      label: Text('Cadastro Restaurante'),
                     ),
                   ],
                   selectedIndex: selectedIndex, //marca o item selecionado

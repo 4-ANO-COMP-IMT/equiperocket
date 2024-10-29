@@ -49,7 +49,13 @@ class LoginAlbum {
         print(responseData);
         final loginResponse = LoginResponse.fromJson(responseData);
         const storage = FlutterSecureStorage();
-        await storage.write(key: 'user_token', value: loginResponse.token);
+        await storage.write(key: 'user_token', value: 
+          jsonEncode({
+            'email': email,
+            'token': loginResponse.token,
+            'type': loginResponse.type,
+          })
+        );
         return loginResponse;
       } else {
         throw Exception(jsonDecode(response.body)['message'] ?? 'Erro ao fazer o login');
