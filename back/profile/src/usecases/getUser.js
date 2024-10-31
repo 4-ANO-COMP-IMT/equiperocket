@@ -5,10 +5,10 @@ async function getUser(email){
     try {
         const profileModel = await profile.findOne({email});
         if(!profileModel){
-            const eateryModel = await rgtEatery.findOne({email});
-            return eateryModel; 
+            const rgtEatery = await rgtEatery.findOne({email});
+            return rgtEatery; 
         };
-        if(!eateryModel && !profileModel){
+        if(!rgtEatery && !profileModel){
             throw new Error("Usuário não é um cliente ou restaurante");
         }
         return profileModel;
