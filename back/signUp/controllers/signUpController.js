@@ -13,11 +13,11 @@ async function postUser(req, res){
         const email = req.body.email;
         const password = req.body.password;
         const name = req.body.name; 
-        const CPF = req.body.CPF; 
+        const cpf = req.body.cpf; 
         let user = {email:email, 
             password:password,
             name:name,
-            CPF:CPF
+            cpf:cpf
         };
         const result = await signUp(user);
         if (result){
