@@ -16,7 +16,7 @@ class _SignUpPageState extends State<SignUpPage> {
   bool acceptTerms = false;
   String error = '';
 
-  void handleSingUp(){
+  Future<void> handleSingUp() async{
     final email = emailController.text;
     final password = passwordController.text;
     final name = nameController.text;
