@@ -5,6 +5,7 @@ import { getUser } from "../usecases/getUser.js";
 import { createUser,createEatery } from "../usecases/createUser.js";    
 import { getProfile } from "../usecases/getProfile.js";
 import { verifyUserType } from "../usecases/verifyUserType.js";
+import { verifyToken } from "../utils/tokenUtils.js";
 
 let userToken = {
     email: null,
@@ -78,12 +79,11 @@ const updateProfile = async (req, res) => {
 };
 
 const getProfileData = async (req, res) => {
-    const { email } = req.body;
     const token = req.headers.authorization?.split(' ')[1];
-    console.log(email, token);
     try {
-        const profileData = await getProfile(email, token);
-        let userType = verifyUserType(profileData.CPF, profileData.CNPJ);
+        const profileData = await getProfile(token);
+        console.log(profileData);   
+        let userType = verifyToken(token).userType;
         if (profileData && profileData.email && profileData.name) {
             let response = {
                 email: profileData.email,
@@ -91,9 +91,9 @@ const getProfileData = async (req, res) => {
                 userType: userType
             };
             console.log(response)
-         
+            
             if (userType === 'user') {
-                response.CPF = profileData.CPF;
+                response.cpf = profileData.cpf;
             } else if (userType === 'restaurant') {
                 response.CNPJ = profileData.CNPJ;
             }

@@ -1,8 +1,8 @@
 
-function verifyUserType(CPF, CNPJ){
+function verifyUserType(data){
     try {
-        console.log(CPF, CNPJ);
-        if (CPF && CPF !== null){
+        const { cpf, CNPJ } = data;
+        if (cpf && cpf !== null){
             return "user";
         }else if (CNPJ && CNPJ !== null){   
             return "restaurant";

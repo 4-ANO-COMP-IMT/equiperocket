@@ -25,7 +25,7 @@ async function authUser(req, res){
         let authResponse = await signIn(user);
         if (authResponse){
             const { data, userType } = authResponse;
-            const cpfCnpj = data.CPF || data.CNPJ;
+            const cpfCnpj = data.cpf || data.CNPJ;
             const token = generateToken({ email,password ,cpfCnpj, userType });
             await publishEvent("auth.status", 
                 JSON.stringify({ email, token, userType: user.userType }));
