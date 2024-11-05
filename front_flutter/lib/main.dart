@@ -1,11 +1,14 @@
 import 'package:english_words/english_words.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:front_flutter/pages/logInPage.dart';
 import 'package:front_flutter/pages/profilePage.dart';
 import 'package:front_flutter/pages/signUpPage.dart';
 import 'package:front_flutter/pages/sign_up_page_restaurant.dart';
 import 'package:provider/provider.dart';
 import 'package:front_flutter/pages/restaurantPage.dart';
-
+import 'dart:html' as html;
 
 void main() {
   runApp(MyApp());
@@ -60,9 +63,27 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
+  bool isLogged = false; 
   var selectedIndex = 0; 
-
+  @override
+  void initState() {
+    super.initState();
+    _checkLoginStatus();
+  }
+  Future<void> _checkLoginStatus() async {
+    if(kIsWeb){
+      final token = html.window.localStorage['user_token'];
+      setState(() {
+        isLogged = token != null;
+      });
+    }else{
+      final storage = FlutterSecureStorage();
+      final token = await storage.read(key: 'user_token');
+      setState(() {
+        isLogged = token != null;
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     Widget page;
@@ -74,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
           page = RestaurantPage();
           break;
       case 1: 
-        page = ProfilePage();
+        page = isLogged ? ProfilePage() : LoginPage();
         break;
       case 3: 
         page = SignUpPage();
@@ -100,8 +121,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       label: Text('Home'),
                     ),
                     NavigationRailDestination(
-                      icon: Icon(Icons.person),
-                      label: Text('Profile'),
+                      icon: Icon(isLogged ? Icons.person : Icons.login),
+                      label: Text(isLogged ? 'Profile' : 'Login'),
                     ),
                     NavigationRailDestination(
                       icon: Icon(Icons.restaurant),

@@ -1,7 +1,5 @@
 import 'dart:async';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:front_flutter/main.dart';
 import 'package:front_flutter/pages/profilePage.dart';
 import 'package:front_flutter/pages/signUpPage.dart';
 import 'package:front_flutter/services/userService.dart';
@@ -55,6 +53,7 @@ class _LoginPageState extends State<LoginPage> {
           context,
           MaterialPageRoute(builder: (context) => ProfilePage()),
           (Route<dynamic> route) => false,
+    
         );
       } else {
         setState(() {
@@ -80,163 +79,97 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => MyHomePage()),
-              (Route<dynamic> route) => false,
-            );
-          },
-        ),
-      ),
       body: Container(
-        padding: const EdgeInsets.all(27),
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Colors.deepPurple,
-              Colors.pinkAccent,
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const SizedBox(height: 80),
-              const Text(
-                'Digite os dados de acesso nos campos abaixo.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+        padding: const EdgeInsets.all(20.0),
+        color: const Color(0xFFF8F9FA), // Cor de fundo
+        child: Center(
+          child: Container(
+            padding: const EdgeInsets.all(20.0),
+            decoration: BoxDecoration(
+              color: const Color(0xFF171412), // Cor de fundo do card
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 8.0,
+                  offset: const Offset(0, 4), // Sombra abaixo do card
                 ),
-              ),
-              const SizedBox(height: 40),
-              CupertinoTextField(
-                cursorColor: Colors.pinkAccent,
-                padding: const EdgeInsets.all(15),
-                placeholder: 'Email',
-                controller: emailController,
-                keyboardType: TextInputType.emailAddress,
-                autocorrect: false,
-                placeholderStyle: const TextStyle(
-                  color: Colors.white70,
-                  fontSize: 18,
+              ],
+            ),
+            constraints: BoxConstraints(maxWidth: 400, minWidth: 300), // Largura máxima do card
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Login',
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                        color: const Color(0xFFDCDCDC),
+                      ),
                 ),
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                ),
-                decoration: const BoxDecoration(
-                  color: Colors.white10,
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(7),
+                const SizedBox(height: 20),
+                _buildLabel('Email:'),
+                TextField(
+                  controller: emailController,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(),
                   ),
                 ),
-              ),
-              const SizedBox(height: 15),
-              CupertinoTextField(
-                controller: passwordController,
-                cursorColor: Colors.pinkAccent,
-                padding: const EdgeInsets.all(15),
-                placeholder: 'Senha',
-                obscureText: true,
-                autocorrect: false,
-                placeholderStyle: const TextStyle(
-                  color: Colors.white70,
-                  fontSize: 18,
-                ),
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                ),
-                decoration: const BoxDecoration(
-                  color: Colors.white10,
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(7),
+                const SizedBox(height: 10),
+                _buildLabel('Senha:'),
+                TextField(
+                  controller: passwordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(),
                   ),
                 ),
-              ),
-              const SizedBox(height: 15),
-              if (error != null)
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    error!,
-                    style: const TextStyle(
-                      color: Colors.redAccent,
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () async {
+                    await login();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF8BF337),
+                    shape: const StadiumBorder(),
+                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  ),
+                  child: const Text('Entrar', style: TextStyle(color: Colors.white)),
+                ),
+                const SizedBox(height: 10),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SignUpPage()),
+                    );
+                  },
+                  child: const Text(
+                    "Não tem uma conta? Crie sua conta",
+                    style: TextStyle(
+                      color: Color(0xFF8BF337),
                       fontSize: 16,
                     ),
                   ),
                 ),
-              const SizedBox(height: 15),
-              SizedBox(
-                width: double.infinity,
-                child: CupertinoButton(
-                  color: isLoading ? Colors.grey : Colors.greenAccent,
-                  padding: const EdgeInsets.all(17),
-                  onPressed: isLoading
-                      ? null
-                      : () async {
-                          await login();
-                        },
-                  child: isLoading
-                      ? const CupertinoActivityIndicator(
-                          color: Colors.black45,
-                        )
-                      : const Text(
-                          'Acessar',
-                          style: TextStyle(
-                            color: Colors.black45,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                ),
-              ),
-              const SizedBox(height: 15),
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.white70,
-                    width: 0.8,
-                  ),
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(7),
-                  ),
-                ),
-                child: CupertinoButton(
-                  child: const Text(
-                    "Crie sua conta",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SignUpPage()), // Supondo que exista uma página de cadastro
-                    );
-                  },
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildLabel(String text) {
+    return Text(
+      text,
+      style: const TextStyle(
+        fontSize: 20, // Ajuste o tamanho da fonte conforme necessário
+        color: Color(0xFF8BF337), // Cor do texto
+        fontWeight: FontWeight.bold, // Negrito
       ),
     );
   }

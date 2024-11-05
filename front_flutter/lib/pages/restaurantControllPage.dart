@@ -5,6 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front_flutter/services/restaurantService.dart'; 
 
 class Restaurantcontrollpage extends StatefulWidget {
+  const Restaurantcontrollpage({super.key});
   @override
   _RestaurantcontrollpageState createState() => _RestaurantcontrollpageState();
 }
@@ -53,6 +54,7 @@ class _RestaurantcontrollpageState extends State<Restaurantcontrollpage>{
       print(e);
       return null;
     }
+    return null;
   }
 
   @override

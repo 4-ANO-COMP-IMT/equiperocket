@@ -14,7 +14,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  List<dynamic> userProfile = [];
+  Map<String, dynamic> userProfile = {};
   bool isLoading = true;
   
   @override
@@ -28,9 +28,10 @@ class _ProfilePageState extends State<ProfilePage> {
       final userService = UserAlbum();
       final userData = await userService.getUser();
 
-      if (userData != null && userData['data'] != null) {
+
+      if (userData != null && mounted) {
         setState(() {
-          userProfile = userData['data'];
+          userProfile = userData;
           isLoading = false;
         });
       } else {
@@ -38,12 +39,11 @@ class _ProfilePageState extends State<ProfilePage> {
           isLoading = false;
         });
 
-        // Redireciona para a página de login, removendo todas as rotas anteriores
+        
         if (mounted) {
-          Navigator.pushAndRemoveUntil(
+          Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => LoginPage()),
-            (Route<dynamic> route) => false, // Remove todas as rotas anteriores
+            MaterialPageRoute(builder: (context) => LoginPage()), 
           );
         }
 
@@ -53,122 +53,129 @@ class _ProfilePageState extends State<ProfilePage> {
       print("Erro ao buscar dados do usuário: $e");
     }
   }
-
+  Future<void>logOut() async {
+    final logOut = LogOut();
+    await logOut.logOut();
+    // Redireciona para a página de login, removendo todas as rotas anteriores
+    if (mounted) {
+  Navigator.pushAndRemoveUntil(
+    context,
+    MaterialPageRoute(builder: (context) => LoginPage()),
+    (Route<dynamic> route) => false, // Remove todas as rotas anteriores
+  );
+}
+  }
 
   @override
   Widget build(BuildContext context) {
     final user = User(
-      name: userProfile.isNotEmpty ? userProfile[0]['name'] : '',
-      email: userProfile.isNotEmpty ? userProfile[0]['email'] : '',
-      cpf: userProfile.isNotEmpty ? userProfile[0]['cpf'] : '',
+      name: userProfile['name'] ?? '' ,
+      email: userProfile['email'] ??'',
+      cpf:  userProfile['cpf'] ?? '',
     );
 
-    return Scaffold(
-      appBar: AppBar(
-         title: Text('Perfil do Usuário', style: Theme.of(context).textTheme.headlineMedium),
-      ),
-      body: SingleChildScrollView(
+   return Scaffold(
+      body: Container(
         padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            Stack(
-              children: [
-                SizedBox(
-                  height: 100,
-                  width: 100,
-                  child: CircleAvatar(
-                    backgroundColor: Colors.grey,
-                    child: Icon(
-                      Icons.person,
-                      color: Colors.white,
-                      size: 50,
-                    ),
-                  ),
+        color: const Color(0xFFF8F9FA), // Cor de fundo
+        child: Center(
+          child: Container(
+            padding: const EdgeInsets.all(20.0),
+            decoration: BoxDecoration(
+              color: const Color(0xFF171412), // Cor de fundo do card
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 8.0,
+                  offset: const Offset(0, 4), // Sombra abaixo do card
                 ),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: Container(
-                    height: 30,
-                    width: 30,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100),
-                      color: Colors.blue, // Replace with your desired color
-                    ),
-                    child: Icon(
-                      Icons.edit,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                  ),
-                )
               ],
             ),
-            const SizedBox(height: 10),
-            Text(user.name, style: Theme.of(context).textTheme.headlineMedium),
-            Text(user.email, style: Theme.of(context).textTheme.bodyMedium),
-            Text(user.cpf, style: Theme.of(context).textTheme.bodyMedium), 
-            const SizedBox(height: 20),
-            SizedBox(
-              width: 200,
-              child: ElevatedButton(
-                onPressed: () {
-                  // Redireciona para a página de atualização de perfil
-                  // Get.to(() => const UpdateProfileScreen());
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue, // Replace with your desired color
-                  shape: const StadiumBorder(),
+            constraints: BoxConstraints(maxWidth: 400, minWidth: 300), // Largura máxima do card
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircleAvatar(
+                  radius: 60,
+                  backgroundColor: Colors.grey,
+                  child: Icon(
+                    Icons.person,
+                    color: Colors.white,
+                    size: 60,
+                  ),
                 ),
-                child: const Text('Editar Perfil', style: TextStyle(color: Colors.white)),
-              ),
+                const SizedBox(height: 20),
+                Text(
+                  'Perfil do Usuário',
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                        color: const Color(0xFFDCDCDC),
+                      ),
+                ),
+                const SizedBox(height: 20),
+                _buildLabel('Nome:'),
+                _buildInfo(user.name.isNotEmpty ? user.name : "Nome não disponível"),
+                const SizedBox(height: 10),
+                _buildLabel('Email:'),
+                _buildInfo(user.email.isNotEmpty ? user.email : "Email não disponível"),
+                const SizedBox(height: 10),
+                _buildLabel('CPF:'),
+                _buildInfo(user.cpf.isNotEmpty ? user.cpf : "CPF não disponível"),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    // Redireciona para a página de atualização de perfil
+                    // Get.to(() => const UpdateProfileScreen());
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF8BF337),
+                    shape: const StadiumBorder(),
+                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  ),
+                  child: const Text('Editar Perfil', style: TextStyle(color: Colors.white)),
+                ),
+                const SizedBox(height: 20),
+                Divider(color: Colors.grey),
+                const SizedBox(height: 10),
+                ProfileMenuWidget(
+                  title: "Sair",
+                  icon: LineAwesomeIcons.sign_out_alt_solid,
+                  textColor: Colors.red,
+                  endIcon: false,
+                  onPress: () {
+                    // Exibe diálogo de confirmação antes de sair
+                    _showLogoutDialog(context, logOut);
+                  },
+                ),
+              ],
             ),
-            const SizedBox(height: 30),
-            const Divider(),
-            const SizedBox(height: 10),
-
-            
-            ProfileMenuWidget(
-              title: "Configurações",
-              icon: LineAwesomeIcons.cog_solid,
-              onPress: () {
-               
-              },
-            ),
-            ProfileMenuWidget(
-              title: "Gerenciamento de Usuários",
-              icon: LineAwesomeIcons.user_check_solid,
-              onPress: () {
-            
-              },
-            ),
-            const Divider(),
-            const SizedBox(height: 10),
-            ProfileMenuWidget(
-              title: "Informações",
-              icon: LineAwesomeIcons.info_solid,
-              onPress: () {
-             
-              },
-            ),
-            ProfileMenuWidget(
-              title: "Sair",
-              icon: LineAwesomeIcons.sign_out_alt_solid,
-              textColor: Colors.red,
-              endIcon: false,
-              onPress: () {
-                // Exibe diálogo de confirmação antes de sair
-                _showLogoutDialog(context);
-              },
-            ),
-          ],
+          ),
         ),
       ),
     );
   }
-}
+  Widget _buildLabel(String text) {
+    return Text(
+      text,
+      style: const TextStyle(
+        fontSize: 20, // Ajuste o tamanho da fonte conforme necessário
+        color: Color(0xFF8BF337), // Cor do texto
+        fontWeight: FontWeight.bold, // Negrito
+      ),
+    );
+  }
 
-void _showLogoutDialog(BuildContext context) {
+  Widget _buildInfo(String text) {
+    return Text(
+      text,
+      style: const TextStyle(
+        fontSize: 18, // Ajuste o tamanho da fonte conforme necessário
+        color: Color(0xFFDCDCDC), // Cor do texto
+      ),
+    );
+  }
+}
+void _showLogoutDialog(BuildContext context, Future<void> Function() logOut) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -185,10 +192,8 @@ void _showLogoutDialog(BuildContext context) {
             ),
             ElevatedButton(
               onPressed: () {
-                // Lógica para logout
-                Navigator.of(context).pop();
-                // Navega para a tela de login após o logout
-                // Get.offAllNamed("/login");
+                Navigator.of(context).pop(); 
+                logOut();
               },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
               child: const Text("Sim"),

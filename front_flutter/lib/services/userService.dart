@@ -70,19 +70,12 @@ class LoginAlbum {
       }
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
-        print(responseData);
+       
         if (responseData['token'] == null ) {
           throw Exception("Token de login ausente");
         }
         final loginResponse = LoginResponse.fromJson(responseData);
         await saveToken(loginResponse);
-         if (kIsWeb) {
-        print("Token armazenado no localStorage: ${html.window.localStorage['user_token']}");
-      } else {
-        final storage = FlutterSecureStorage();
-        String? storedToken = await storage.read(key: 'user_token');
-        print("Token armazenado no FlutterSecureStorage: $storedToken");
-      }
 
         return loginResponse;
       } else {
@@ -183,52 +176,43 @@ class UserAlbum{
       String? userToken;
       if(kIsWeb){
         userToken = html.window.localStorage['user_token'];
-
-     }else{
+      }else{
         final storage = FlutterSecureStorage();
         userToken = await storage.read(key: 'user_token');
-     }
-      print('$userToken userToken');
+      }
       if (userToken == null) {
         return {
           'data': null,
           'error': 'Token não encontrado',
         };
       }
-      print("hrere");
       Map<String, dynamic> tokenData = jsonDecode(userToken);
       if (tokenData['token'] == null) {
         return {
           'data': null,
           'error': 'Token não encontrado na estrutura.',
         };
-}
-      print("$tokenData tokenData");
+      }
+
       String token = tokenData['token'];
-      print("$token token");
       final response = await http.get(
-        Uri.parse('http://localhost:30000/getProfileData'),
+        Uri.parse('http://localhost:30000/profile'),
         headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $token',
         },
       );
-
+      
       if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
-        return {
-          'data': responseData,
-          'error': null,
-        };
+        final decodedresponse = jsonDecode(response.body);
+        return decodedresponse;
       } else {
-        final Map<String, dynamic> responseBody = jsonDecode(response.body);
-        return {
-          'data': null,
-          'error': responseBody['message'] ?? 'Erro ao buscar o usuário',
-        };
+        throw Exception('Erro ao buscar o usuário: ${response.statusCode}');
       }
 
     }catch(e){
-      throw Exception("Erro ao buscar o usuário: $e");
+      print("Erro ao buscar o usuário: $e");
+      return null;
     }
   }
 
