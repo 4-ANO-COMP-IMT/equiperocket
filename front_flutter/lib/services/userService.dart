@@ -1,24 +1,24 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;  
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'dart:html' as html;
+
+//Futuramente: remover a parte web para virar apenas aplicativo mobile
 
 class LoginResponse {
   final String token;
-  final String name;
-  final String type;
+
 
   const LoginResponse({
     required this.token,
-    required this.name,
-    required this.type,
+    
   });
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) {
     return LoginResponse(
-      token: json['token'],
-      name: json['name'],
-      type: json['type'],
+      token: json['token'] ?? ''
+   
     );
   }
 }
@@ -30,10 +30,29 @@ class LoginAlbum {
     required this.email,
     required this.password,
   });
-  
-  Future<LoginResponse?> singIn() async {
-    try{
-      final response = await http.post(
+
+  Future<void> saveToken(LoginResponse loginResponse) async {
+    final value = jsonEncode({
+      'token': loginResponse.token,
+    });
+
+    if(kIsWeb){
+      html.window.localStorage['user_token'] = value;
+      print("Token armazenado no localStorage: ${html.window.localStorage['user_token']}");
+
+    }else{
+      final storage = FlutterSecureStorage();
+      await storage.write(
+        key: 'user_token',
+        value: value
+      );
+    }
+  }
+
+  Future<LoginResponse?> signIn() async {
+    try {
+      final http.Client client = http.Client();
+      final response = await client.post(
         Uri.parse('http://localhost:30001/sign-in'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
@@ -43,41 +62,51 @@ class LoginAlbum {
           'password': password,
         }),
       );
-     
+      if(response.statusCode == 401){
+        throw Exception("Email ou senha inválidos");
+      }
+      if(response.statusCode == 500){
+        throw Exception("Erro no servidor");
+      }
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
         print(responseData);
+        if (responseData['token'] == null ) {
+          throw Exception("Token de login ausente");
+        }
         final loginResponse = LoginResponse.fromJson(responseData);
-        const storage = FlutterSecureStorage();
-        await storage.write(key: 'user_token', value: 
-          jsonEncode({
-            'email': email,
-            'token': loginResponse.token,
-            'type': loginResponse.type,
-          })
-        );
+        await saveToken(loginResponse);
+         if (kIsWeb) {
+        print("Token armazenado no localStorage: ${html.window.localStorage['user_token']}");
+      } else {
+        final storage = FlutterSecureStorage();
+        String? storedToken = await storage.read(key: 'user_token');
+        print("Token armazenado no FlutterSecureStorage: $storedToken");
+      }
+
         return loginResponse;
       } else {
         throw Exception(jsonDecode(response.body)['message'] ?? 'Erro ao fazer o login');
       }
-    }catch(e){
-      throw Exception("Erro ao fazer o login: $e");
-    }
-    
-  }
-}
-class LogOut{
-  final storage = FlutterSecureStorage();
-  Future<String?> logOut() async {
-    try {
-      await storage.delete(key: 'user_token');
-      return null;
     } catch (e) {
       throw Exception("Erro ao fazer o login: $e");
     }
-    
   }
+}
 
+class LogOut {
+  Future<void> logOut() async {
+    if (kIsWeb) {
+      // Remove o token do localStorage para Web
+      html.window.localStorage.remove('user_token');
+      print("Token removido do localStorage para Web");
+    } else {
+      // Remove o token do FlutterSecureStorage para Android/iOS
+      final storage = FlutterSecureStorage();
+      await storage.delete(key: 'user_token');
+      print("Token removido do FlutterSecureStorage para Android/iOS");
+    }
+  }
 }
 class SignUpAlbum {
   final String name;
@@ -149,30 +178,39 @@ class SignUpAlbum {
 }
 
 class UserAlbum{
-  final storage = FlutterSecureStorage();
   Future<Map<String, dynamic>?> getUser() async { 
     try {
-      final userToken = await storage.read(key: 'user_token');
+      String? userToken;
+      if(kIsWeb){
+        userToken = html.window.localStorage['user_token'];
+
+     }else{
+        final storage = FlutterSecureStorage();
+        userToken = await storage.read(key: 'user_token');
+     }
+      print('$userToken userToken');
       if (userToken == null) {
         return {
           'data': null,
           'error': 'Token não encontrado',
         };
       }
+      print("hrere");
       Map<String, dynamic> tokenData = jsonDecode(userToken);
-      String email = tokenData['email'];
+      if (tokenData['token'] == null) {
+        return {
+          'data': null,
+          'error': 'Token não encontrado na estrutura.',
+        };
+}
+      print("$tokenData tokenData");
       String token = tokenData['token'];
-      String type = tokenData['type'];
-      final response = await http.post(
+      print("$token token");
+      final response = await http.get(
         Uri.parse('http://localhost:30000/getProfileData'),
         headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token',
         },
-        body: jsonEncode(<String, String>{
-          'email': email,
-          'token': token,
-          'type':  type,
-        }),
       );
 
       if (response.statusCode == 200) {
