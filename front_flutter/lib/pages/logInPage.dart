@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:front_flutter/components/navbar.dart';
 import 'package:front_flutter/pages/profilePage.dart';
 import 'package:front_flutter/pages/signUpPage.dart';
 import 'package:front_flutter/services/userService.dart';
@@ -49,11 +50,10 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       if (loginResponse != null && mounted) {
-        Navigator.pushAndRemoveUntil(
+        Navigator.pop(context);
+        Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => ProfilePage()),
-          (Route<dynamic> route) => false,
-    
         );
       } else {
         setState(() {
@@ -79,6 +79,8 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+      ),
       body: Container(
         padding: const EdgeInsets.all(20.0),
         color: const Color(0xFFF8F9FA), // Cor de fundo

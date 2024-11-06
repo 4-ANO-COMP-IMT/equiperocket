@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:front_flutter/components/navbar.dart';
 import 'package:front_flutter/components/profileMenuWidget.dart';
 import 'package:front_flutter/model/user.dart';
 import 'package:front_flutter/pages/logInPage.dart';
@@ -58,10 +59,11 @@ class _ProfilePageState extends State<ProfilePage> {
     await logOut.logOut();
     // Redireciona para a página de login, removendo todas as rotas anteriores
     if (mounted) {
+  
   Navigator.pushAndRemoveUntil(
     context,
     MaterialPageRoute(builder: (context) => LoginPage()),
-    (Route<dynamic> route) => false, // Remove todas as rotas anteriores
+    (route) => false,
   );
 }
   }
@@ -75,6 +77,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
 
    return Scaffold(
+      appBar: AppBar(),
       body: Container(
         padding: const EdgeInsets.all(20.0),
         color: const Color(0xFFF8F9FA), // Cor de fundo

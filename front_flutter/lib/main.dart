@@ -9,6 +9,7 @@ import 'package:front_flutter/pages/sign_up_page_restaurant.dart';
 import 'package:provider/provider.dart';
 import 'package:front_flutter/pages/restaurantPage.dart';
 import 'dart:html' as html;
+import 'package:front_flutter/components/navbar.dart';
 
 void main() {
   runApp(MyApp());
@@ -37,7 +38,7 @@ class MyApp extends StatelessWidget {
 class MyAppState extends ChangeNotifier {
   var current = WordPair.random();
 
-  void getNext(){
+  void getNext() {
     current = WordPair.random();
     notifyListeners();
   }
@@ -54,29 +55,28 @@ class MyAppState extends ChangeNotifier {
   }
 }
 
-
-
-
 class MyHomePage extends StatefulWidget {
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  bool isLogged = false; 
-  var selectedIndex = 0; 
+  bool isLogged = false;
+  var selectedIndex = 0;
+
   @override
   void initState() {
     super.initState();
     _checkLoginStatus();
   }
+
   Future<void> _checkLoginStatus() async {
-    if(kIsWeb){
+    if (kIsWeb) {
       final token = html.window.localStorage['user_token'];
       setState(() {
         isLogged = token != null;
       });
-    }else{
+    } else {
       final storage = FlutterSecureStorage();
       final token = await storage.read(key: 'user_token');
       setState(() {
@@ -84,187 +84,35 @@ class _MyHomePageState extends State<MyHomePage> {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     Widget page;
     switch (selectedIndex) {
-      case 0:
-        page = GeneratorPage();
+      case 1:
+        page = RestaurantPage();
         break;
-      case 2:
-          page = RestaurantPage();
-          break;
-      case 1: 
+      case 0:
         page = isLogged ? ProfilePage() : LoginPage();
         break;
-      case 3: 
+      case 2:
         page = SignUpPage();
         break;
-      case 4: 
+      case 3:
         page = SignUpResPage();
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Scaffold(
-          body: Row(
-            children: [
-              SafeArea(
-                child: NavigationRail(
-                  extended: constraints.maxWidth >= 600,
-                  destinations: [
-                    NavigationRailDestination(
-                      icon: Icon(Icons.home),
-                      label: Text('Home'),
-                    ),
-                    NavigationRailDestination(
-                      icon: Icon(isLogged ? Icons.person : Icons.login),
-                      label: Text(isLogged ? 'Profile' : 'Login'),
-                    ),
-                    NavigationRailDestination(
-                      icon: Icon(Icons.restaurant),
-                      label: Text('Restaurantes'),
-                    ),
-                    NavigationRailDestination(
-                      icon: Icon(Icons.person_add),
-                      label: Text('Cadastro'),
-                    ),
-                    NavigationRailDestination(
-                      icon: Icon(Icons.restaurant_menu),
-                      label: Text('Cadastro Restaurante'),
-                    ),
-                  ],
-                  selectedIndex: selectedIndex, //marca o item selecionado
-                  onDestinationSelected: (value) {
-                    setState(() {
-                      selectedIndex = value;
-                      print(value);
-                    });
-                  },
-                ),
-              ),
-              Expanded(
-                child: Container(
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  child: page,
-                ),
-              ),
-            ],
-          ),
-        );
-      }
-    );
-  }
-}
-
-class GeneratorPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    var appState = context.watch<MyAppState>();
-    var pair = appState.current;
-
-    IconData icon;
-    if (appState.favorites.contains(pair)) {
-      icon = Icons.favorite;
-    } else {
-      icon = Icons.favorite_border;
-    }
-
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          BigCard(pair: pair),
-          SizedBox(height: 10),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ElevatedButton.icon(
-                onPressed: () {
-                  appState.toggleFavorite();
-                },
-                icon: Icon(icon),
-                label: Text('Like'),
-              ),
-              SizedBox(width: 10),
-              ElevatedButton(
-                onPressed: () {
-                  appState.getNext();
-                },
-                child: Text('Next'),
-              ),
-            ],
-          ),
-        ],
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Flutter Front'),
+      ),
+      drawer: Navbar(), // Aqui usamos o Navbar como o drawer
+      body: Center(
+        child: page,
       ),
     );
   }
 }
-
-// ...
-
-
-class BigCard extends StatelessWidget {
-  const BigCard({
-    super.key,
-    required this.pair,
-  });
-
-  final WordPair pair;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final style = theme.textTheme.displayMedium!.copyWith(
-      color: theme.colorScheme.onPrimary,
-    );
-
-    return Card(
-      color: theme.colorScheme.primary,
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Text(
-          pair.asPascalCase, 
-          style: style,
-          semanticsLabel: "${pair.first} ${pair.second}",
-          ),
-      ),
-    );
-  }
-}
-
-// ...
-
-class FavoritesPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    var appState = context.watch<MyAppState>();
-
-    if (appState.favorites.isEmpty) {
-      return Center(
-        child: Text('No favorites yet.'),
-      );
-    }
-
-    return ListView(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(20),
-          child: Text('You have '
-              '${appState.favorites.length} favorites:'),
-        ),
-        for (var pair in appState.favorites)
-          ListTile(
-            leading: Icon(Icons.favorite),
-            title: Text(pair.asLowerCase),
-          ),
-      ],
-    );
-  }
-}
-
-
-
