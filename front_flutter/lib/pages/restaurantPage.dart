@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// ignore: library_prefixes
 import 'package:front_flutter/services/restaurantService.dart' as RestaurantService; 
 class RestaurantPage extends StatefulWidget {
   @override

@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:front_flutter/components/navbar.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front_flutter/components/profileMenuWidget.dart';
 import 'package:front_flutter/model/user.dart';
 import 'package:front_flutter/pages/logInPage.dart';
 import 'package:front_flutter/services/userService.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
-
-
+import 'package:flutter/foundation.dart';
+import 'dart:html' as html;
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
   @override
-    State<ProfilePage> createState() => _ProfilePageState();
+  State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
   Map<String, dynamic> userProfile = {};
   bool isLoading = true;
-  
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -28,23 +28,35 @@ class _ProfilePageState extends State<ProfilePage> {
     try {
       final userService = UserAlbum();
       final userData = await userService.getUser();
-
-
+      
       if (userData != null && mounted) {
         setState(() {
           userProfile = userData;
           isLoading = false;
         });
+        if(userProfile.containsKey('userType')){
+          if (kIsWeb) {
+          html.window.localStorage['user_type'] = userProfile['userType'];
+          print('User type from userProfile: ${userProfile['userType']}');
+
+        } else {
+          final storage = FlutterSecureStorage();
+          await storage.write(
+            key: 'user_type',
+            value: userProfile['userType'],
+          );
+        }
+        }
+         
       } else {
         setState(() {
           isLoading = false;
         });
-
         
         if (mounted) {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => LoginPage()), 
+            MaterialPageRoute(builder: (context) => LoginPage()),
           );
         }
 
@@ -54,29 +66,29 @@ class _ProfilePageState extends State<ProfilePage> {
       print("Erro ao buscar dados do usuário: $e");
     }
   }
-  Future<void>logOut() async {
+
+  Future<void> logOut() async {
     final logOut = LogOut();
     await logOut.logOut();
-    // Redireciona para a página de login, removendo todas as rotas anteriores
     if (mounted) {
-  
-  Navigator.pushAndRemoveUntil(
-    context,
-    MaterialPageRoute(builder: (context) => LoginPage()),
-    (route) => false,
-  );
-}
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage()),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final user = User(
-      name: userProfile['name'] ?? '' ,
-      email: userProfile['email'] ??'',
-      cpf:  userProfile['cpf'] ?? '',
+      name: userProfile['name'] ?? '',
+      email: userProfile['email'] ?? '',
+      cpf: userProfile['cpf'] ?? '',
+      cnpj: userProfile['CNPJ'] ?? '',
     );
+   
 
-   return Scaffold(
+    return Scaffold(
       appBar: AppBar(),
       body: Container(
         padding: const EdgeInsets.all(20.0),
@@ -95,7 +107,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ],
             ),
-            constraints: BoxConstraints(maxWidth: 400, minWidth: 300), // Largura máxima do card
+            constraints: BoxConstraints(
+                maxWidth: 400, minWidth: 300), // Largura máxima do card
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -117,13 +130,18 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 const SizedBox(height: 20),
                 _buildLabel('Nome:'),
-                _buildInfo(user.name.isNotEmpty ? user.name : "Nome não disponível"),
+                _buildInfo(
+                    user.name.isNotEmpty ? user.name : "Nome não disponível"),
                 const SizedBox(height: 10),
                 _buildLabel('Email:'),
-                _buildInfo(user.email.isNotEmpty ? user.email : "Email não disponível"),
+                _buildInfo(user.email.isNotEmpty
+                    ? user.email
+                    : "Email não disponível"),
                 const SizedBox(height: 10),
-                _buildLabel('CPF:'),
-                _buildInfo(user.cpf.isNotEmpty ? user.cpf : "CPF não disponível"),
+                _buildLabel(userProfile.containsKey('cpf') ? 'CPF:' : 'CNPJ:'),
+                _buildInfo(user.cpf.isNotEmpty
+                    ? user.cpf 
+                    : user.cnpj.isNotEmpty ? user.cnpj : "Documento não disponível"),
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
@@ -133,9 +151,11 @@ class _ProfilePageState extends State<ProfilePage> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF8BF337),
                     shape: const StadiumBorder(),
-                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 20),
                   ),
-                  child: const Text('Editar Perfil', style: TextStyle(color: Colors.white)),
+                  child: const Text('Editar Perfil',
+                      style: TextStyle(color: Colors.white)),
                 ),
                 const SizedBox(height: 20),
                 Divider(color: Colors.grey),
@@ -157,6 +177,7 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
+
   Widget _buildLabel(String text) {
     return Text(
       text,
@@ -178,31 +199,31 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 }
-void _showLogoutDialog(BuildContext context, Future<void> Function() logOut) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Logout"),
-          content: const Text("Você tem certeza que deseja sair?"),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
 
-                Navigator.of(context).pop(); 
-              },
-              child: const Text("Cancelar"),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop(); 
-                logOut();
-              },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
-              child: const Text("Sim"),
-            ),
-          ],
-        );
-      },
-    );
-  }
+void _showLogoutDialog(BuildContext context, Future<void> Function() logOut) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text("Logout"),
+        content: const Text("Você tem certeza que deseja sair?"),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text("Cancelar"),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.of(context).pop();
+              await logOut();
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+            child: const Text("Sim"),
+          ),
+        ],
+      );
+    },
+  );
+}

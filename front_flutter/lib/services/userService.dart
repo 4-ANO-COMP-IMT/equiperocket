@@ -92,11 +92,13 @@ class LogOut {
     if (kIsWeb) {
       // Remove o token do localStorage para Web
       html.window.localStorage.remove('user_token');
+      html.window.localStorage.remove('user_type');
       print("Token removido do localStorage para Web");
     } else {
       // Remove o token do FlutterSecureStorage para Android/iOS
       final storage = FlutterSecureStorage();
       await storage.delete(key: 'user_token');
+      await storage.delete(key: 'user_type');
       print("Token removido do FlutterSecureStorage para Android/iOS");
     }
   }
@@ -205,6 +207,7 @@ class UserAlbum{
       
       if (response.statusCode == 200) {
         final decodedresponse = jsonDecode(response.body);
+       
         return decodedresponse;
       } else {
         throw Exception('Erro ao buscar o usuário: ${response.statusCode}');

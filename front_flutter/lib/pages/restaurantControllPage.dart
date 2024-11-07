@@ -7,7 +7,7 @@ import 'package:front_flutter/services/restaurantService.dart';
 class Restaurantcontrollpage extends StatefulWidget {
   const Restaurantcontrollpage({super.key});
   @override
-  _RestaurantcontrollpageState createState() => _RestaurantcontrollpageState();
+  State<Restaurantcontrollpage> createState() => _RestaurantcontrollpageState();
 }
 
 class _RestaurantcontrollpageState extends State<Restaurantcontrollpage>{

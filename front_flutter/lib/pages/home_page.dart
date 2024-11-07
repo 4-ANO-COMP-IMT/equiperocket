@@ -1,16 +1,20 @@
+// lib/pages/home_page.dart
+
 import 'package:flutter/material.dart';
-import 'package:front_flutter/services/locationService.dart';
-import 'package:front_flutter/services/restaurantService.dart';
+// ignore: library_prefixes
+import 'package:front_flutter/services/locationService.dart' as LocationService;
+// ignore: library_prefixes
+import 'package:front_flutter/services/restaurantService.dart' as RestaurantService;
 import 'package:front_flutter/components/occupancy_info.dart';
 import 'package:front_flutter/components/home_button_group.dart';
 
 class HomePage extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  List<dynamic> restaurants = [];
+  List<Map<String, dynamic>> restaurants = [];
   bool loading = true;
   String? error;
 
@@ -20,18 +24,30 @@ class _HomePageState extends State<HomePage> {
       error = null;
     });
     try {
-      final location = await getLocation();
-      final response = await getNearby(location.latitude, location.longitude, 5000);
+      final service = RestaurantService.Restaurantservice(); 
+      final location = await LocationService.LocationService().getLocation();
+      final latitude = location['latitude'];
+      final longitude = location['longitude'];
+      print('Latitude: $latitude, Longitude: $longitude');
+      final response = await service.getNearbyRestaurants(latitude, longitude, 5000);
 
-      if (response == null) {
-        throw Exception("Erro ao buscar restaurantes");
-      }
       if (response.isEmpty) {
         throw Exception("Nenhum restaurante encontrado");
       }
 
+      // Tratar dados para garantir que não existam valores null onde não deveriam
+      final sanitizedRestaurants = response.map<Map<String, dynamic>>((restaurant) {
+        return {
+          'name': restaurant['name'] ?? 'Nome desconhecido',
+          'category': restaurant['category'] ?? 'Categoria desconhecida',
+          'address': restaurant['address'] ?? 'Endereço desconhecido',
+          'currentOccupancy': restaurant['currentOccupancy'] ?? 0,
+          'maxOccupancy': restaurant['maxOccupancy'] ?? 0,
+        };
+      }).toList();
+
       setState(() {
-        restaurants = response;
+        restaurants = sanitizedRestaurants;
       });
     } catch (e) {
       setState(() {
@@ -84,11 +100,14 @@ class _HomePageState extends State<HomePage> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 30),
-              HomeButtonGroup(onUpdate: updateOccupancyData),
+              ButtonGroup(onUpdate: updateOccupancyData),
               const SizedBox(height: 30),
               loading
                   ? CircularProgressIndicator(color: Colors.white)
-                  : OccupancyInfo(occupancyData: restaurants),
+                  : OccupancyInfo(
+                      occupancyData: restaurants,
+                      loading: loading,
+                    ),
               if (error != null)
                 Padding(
                   padding: const EdgeInsets.only(top: 20),

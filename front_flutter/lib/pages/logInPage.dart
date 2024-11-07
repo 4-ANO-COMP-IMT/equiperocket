@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:front_flutter/components/navbar.dart';
 import 'package:front_flutter/pages/profilePage.dart';
 import 'package:front_flutter/pages/signUpPage.dart';
 import 'package:front_flutter/services/userService.dart';
@@ -50,20 +49,21 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       if (loginResponse != null && mounted) {
-        Navigator.pop(context);
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => ProfilePage()),
         );
-      } else {
+      } if (mounted && loginResponse == null) {
         setState(() {
           error = 'Erro ao fazer login. Verifique suas credenciais.';
+          throw Exception("Erro ao fazer login. Verifique suas credenciais.");
         });
       }
     } on TimeoutException catch (_) {
       setState(() {
         error =
-            "Tempo de espera esgotado. Tente novamente mais tarde."; // Mensagem de timeout
+            "Tempo de espera esgotado. Tente novamente mais tarde."; 
+            throw Exception("Tempo de espera esgotado. Tente novamente mais tarde.");
       });
     } catch (e) {
       setState(() {
@@ -79,8 +79,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-      ),
+      appBar: AppBar(),
       body: Container(
         padding: const EdgeInsets.all(20.0),
         color: const Color(0xFFF8F9FA), // Cor de fundo
@@ -98,7 +97,8 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ],
             ),
-            constraints: BoxConstraints(maxWidth: 400, minWidth: 300), // Largura máxima do card
+            constraints: BoxConstraints(
+                maxWidth: 400, minWidth: 300), // Largura máxima do card
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -130,6 +130,14 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 const SizedBox(height: 20),
+                if (error != null)
+                  Text(
+                    error!,
+                    style: const TextStyle(
+                      color: Colors.red,
+                      fontSize: 16,
+                    ),
+                  ),
                 ElevatedButton(
                   onPressed: () async {
                     await login();
@@ -137,9 +145,11 @@ class _LoginPageState extends State<LoginPage> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF8BF337),
                     shape: const StadiumBorder(),
-                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 20),
                   ),
-                  child: const Text('Entrar', style: TextStyle(color: Colors.white)),
+                  child: const Text('Entrar',
+                      style: TextStyle(color: Colors.white)),
                 ),
                 const SizedBox(height: 10),
                 TextButton(

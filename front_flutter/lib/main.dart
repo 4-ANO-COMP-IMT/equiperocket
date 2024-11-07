@@ -1,4 +1,3 @@
-import 'package:english_words/english_words.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -10,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:front_flutter/pages/restaurantPage.dart';
 import 'dart:html' as html;
 import 'package:front_flutter/components/navbar.dart';
+import 'package:front_flutter/pages/home_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -36,23 +36,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyAppState extends ChangeNotifier {
-  var current = WordPair.random();
-
-  void getNext() {
-    current = WordPair.random();
-    notifyListeners();
-  }
-
-  var favorites = <WordPair>[];
-
-  void toggleFavorite() {
-    if (favorites.contains(current)) {
-      favorites.remove(current);
-    } else {
-      favorites.add(current);
-    }
-    notifyListeners();
-  }
+  
 }
 
 class MyHomePage extends StatefulWidget {
@@ -89,16 +73,19 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     Widget page;
     switch (selectedIndex) {
-      case 1:
-        page = RestaurantPage();
-        break;
       case 0:
+        page = HomePage();
+        break;
+      case 1:
         page = isLogged ? ProfilePage() : LoginPage();
         break;
       case 2:
-        page = SignUpPage();
+        page = RestaurantPage();
         break;
       case 3:
+        page = SignUpPage();
+        break;
+      case 4:
         page = SignUpResPage();
         break;
       default:
