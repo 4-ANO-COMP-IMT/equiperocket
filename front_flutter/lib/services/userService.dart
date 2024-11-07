@@ -156,7 +156,7 @@ class SignUpAlbum {
           'name': name,
           'email': email,
           'password': password,
-          'cnpj': cnpj,
+          'CNPJ': cnpj,
         }),
       );
       if (response.statusCode == 200) {
