@@ -66,10 +66,10 @@ class _SignUpPageState extends State<SignUpResPage> {
             content: Text('Cadastrado com sucesso'),
           ),
         );
-        Navigator.pushAndRemoveUntil(
+        Navigator.push(
           context, 
           MaterialPageRoute(builder: (context) => LoginPage()), 
-          (Route<dynamic> route) => false
+          
         );
       });
     }

@@ -53,7 +53,7 @@ class LoginAlbum {
     try {
       final http.Client client = http.Client();
       final response = await client.post(
-        Uri.parse('http://localhost:30001/sign-in'),
+        Uri.parse('http://localhost:8000/sign-in'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -121,7 +121,7 @@ class SignUpAlbum {
   Future<String?> signUp() async{
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:30003/sign-up'),
+        Uri.parse('http://localhost:9000/sign-up'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -148,7 +148,7 @@ class SignUpAlbum {
   Future<String?> signUpRestaurant() async{
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:30003/sign-up-restaurant'),
+        Uri.parse('http://localhost:9000/sign-up-restaurant'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -198,7 +198,7 @@ class UserAlbum{
 
       String token = tokenData['token'];
       final response = await http.get(
-        Uri.parse('http://localhost:30000/profile'),
+        Uri.parse('http://localhost:8800/profile'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $token',

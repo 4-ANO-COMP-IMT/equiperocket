@@ -51,12 +51,19 @@ class _NavbarState extends State<Navbar> {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.deepOrange,
+          DrawerHeader(
+            decoration: const BoxDecoration(
+              color: Colors.blue,
             ),
-            child: Text('Menu',
-                style: TextStyle(color: Colors.white, fontSize: 24)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  'Menu',
+                  style: TextStyle(color: Colors.white, fontSize: 24),
+                ),
+              ],
+            ),
           ),
           ListTile(
             leading: const Icon(Icons.home),

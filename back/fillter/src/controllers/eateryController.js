@@ -6,6 +6,7 @@ import { getCEP } from "../usecases/getCEP.js";
 import { getCoordinates } from "../usecases/getCoordinates.js";
 import { setEatery } from "../usecases/setEatery.js";
 import Eatery from "../models/eatery.js";
+import { updateEateryOccupancy } from "../usecases/updateEateryOccupancy.js";
 
 
 async function initSubscriber() {
@@ -70,18 +71,15 @@ async function getEateryById(req, res) {
 async function addEatery(req, res) {
   try {
     
-    const { id, name, category, cep, maxOcupancy, number, cnpj, branchName } =
-      req.body;
-    if (
-      !name ||
-      !category ||
-      !cep ||
-      !maxOcupancy ||
-      !id ||
-      !number ||
-      !cnpj ||
-      !branchName
-    ) {
+    const name = req.body.name;
+    const category = req.body.category;
+    const cep = req.body.cep;
+    const maxOcupancy = req.body.maxOcupancy;
+    const number = req.body.number;
+    const cnpj = req.body.cnpj;
+    const branchName = req.body.branchName;
+    console.log(name, category, cep, maxOcupancy, number, cnpj, branchName);
+    if (!name || !category || !cep ||!maxOcupancy || !number || !cnpj || !branchName) {
       return res.status(400).json({ error: "Missing parameters" });
     }
     const fullAddress = await getCEP(cep);
@@ -109,10 +107,11 @@ async function addEatery(req, res) {
         type: "Point",
         coordinates: [longitude, latitude],
       },
-      cnpj,
+      CNPJ: cnpj,
       branchName,
       atualOcupancy: 0,
     };
+    console.log (eateryData);
     const eatery = await setEatery(eateryData);
     return res.status(201).json(eatery);
   } catch (error) {
@@ -168,24 +167,25 @@ async function getEateryByCNPJ(req, res) {
 
 async function updateOcuancy(req, res) {
   try {
-    const { cnpj, ocupancy } = req.body;
-    if (!cnpj || !ocupancy) {
+    const { cnpj, nome, ocupancy } = req.body;
+    console.log(cnpj, nome, ocupancy);
+    if (!cnpj || !nome || ocupancy == null) {
       return res.status(400).json({ error: "Missing parameters" });
     }
-    if (userType !== "restaurant") {
-      return res.status(403).json({ error: "Usuário não autorizado" });
-    }
-    let eatery = updateOcuancy(cnpj, ocupancy);
-    if (eatery === null) {
+    const eatery = await updateEateryOccupancy(cnpj, nome, ocupancy);
+    console.log(eatery);
+    if (!eatery) {
       return res.status(404).json({ error: "Restaurante não encontrado" });
     }
-
-    publishEvent("ocupancy_updated", { cnpj, ocupancy });
+    publishEvent("occupancy_updated", { cnpj, nome, ocupancy });
     return res.status(200).json(eatery);
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
 }
+
+
+
 export {
   getEatery,
   getEateryNearby,

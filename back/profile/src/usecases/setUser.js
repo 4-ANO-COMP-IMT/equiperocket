@@ -3,7 +3,7 @@ import rgtEatery from "../models/rgtEatery.js";
 
 async function setUser(identifier,updateData){
     try {
-        const profileModel = await profile.findOneAndUpdate({ CPF:identifier }, updateData, { new: true });
+        const profileModel = await profile.findOneAndUpdate({ cpf:identifier }, updateData, { new: true });
         if(!profileModel){
             const eateryModel = await rgtEatery.findOneAndUpdate({ CNPJ:identifier }, updateData, { new: true });
             if(!eateryModel){

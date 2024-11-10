@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class Restaurantservice {
-  static const String baseUrl = "http://localhost:30002";
+  static const String baseUrl = "http://localhost:9090";
 
   Future<List<dynamic>> getRestaurants() async {
     try {
@@ -22,13 +22,12 @@ class Restaurantservice {
   Future<List<dynamic>> getNearbyRestaurants(
       double lat, double long, double rad) async {
     try {
-
       final params = {
         'lat': lat.toString(),
         'long': long.toString(),
         'rad': rad.toString(),
       };
-   
+
       final response = await http.get(
         Uri.parse(
             '$baseUrl/restaurants/nearby/?${Uri(queryParameters: params).query}'),
@@ -49,15 +48,18 @@ class Restaurantservice {
     }
   }
 
-  Future<void> updateOccupancy(String restaurantId, int occupancy) async {
+  Future<void> updateOccupancy(String cnpj, String nome, int ocupancy) async {
     try {
+      print('CNPJ: $cnpj, Nome: $nome, Ocupancy: $ocupancy');
       final response = await http.post(
-        Uri.parse('$baseUrl/restaurants/$restaurantId/occupancy'),
+        Uri.parse('$baseUrl/restaurants/occupancy'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode({
-          'currentOccupancy': occupancy,
+          'cnpj': cnpj,
+          'nome': nome,
+          'ocupancy': ocupancy,
         }),
       );
 
@@ -72,45 +74,59 @@ class Restaurantservice {
   }
 
   Future<Map<String, dynamic>> getRestaurantsByCNPJ(String cnpj) async {
-  try {
-    final response = await http.post(
-      Uri.parse("$baseUrl/restaurants/cnpj"),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        'cnpj': cnpj,
-      }),
-    );
+    try {
+      final response = await http.post(
+        Uri.parse("$baseUrl/restaurants/cnpj"),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'cnpj': cnpj,
+        }),
+      );
 
-    if (response.statusCode == 200) {
-      final result = jsonDecode(response.body);
-      return result;
-    } else if (response.statusCode == 404) {
-      return {'error': 'Restaurante não encontrado com esse CNPJ'};
-    } else {
-      print(jsonDecode(response.body));
-      throw Exception("Failed to load restaurants: ${response.statusCode}");
+      if (response.statusCode == 200) {
+        final result = jsonDecode(response.body);
+
+        // Verificar se o resultado é uma lista e adaptá-lo como um mapa
+        if (result is List) {
+          return {'restaurants': result};
+        } else if (result is Map<String, dynamic>) {
+          return result;
+        } else {
+          throw Exception("Formato inesperado de resposta do servidor");
+        }
+      } else if (response.statusCode == 404) {
+        return {'error': 'Restaurante não encontrado com esse CNPJ'};
+      } else {
+        print(jsonDecode(response.body));
+        throw Exception("Failed to load restaurants: ${response.statusCode}");
+      }
+    } catch (e) {
+      print(e);
+      throw Exception("Failed to load restaurants");
     }
-  } catch (e) {
-    print(e);
-    throw Exception("Failed to load restaurants");
   }
-}
 
   Future<void> addRestaurant(Map<String, dynamic> restaurantData) async {
     try {
+      final send = jsonEncode(restaurantData);
+      print(send);
       final response = await http.post(Uri.parse("$baseUrl/restaurants/add"),
           headers: {
             'Content-Type': 'application/json; charset=UTF-8',
           },
           body: jsonEncode(restaurantData));
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         final result = jsonDecode(response.body);
         print("Restaurante cadastrado com sucesso: $result");
       } else {
+        final errorResponse = jsonDecode(response.body);
+        final errorMessage = errorResponse.containsKey('error')
+            ? errorResponse['error']
+            : 'Erro desconhecido';
         throw Exception(
-            "Erro ao cadastrar restaurante: ${response.statusCode} : ${jsonDecode(response.body)['error']}");
+            "Erro ao cadastrar restaurante: ${response.statusCode} : $errorMessage");
       }
     } catch (e) {
       print("Erro: $e");

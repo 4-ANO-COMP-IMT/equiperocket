@@ -15,7 +15,7 @@ class Restaurantcontrollpage extends StatefulWidget {
 
 class _RestaurantcontrollpageState extends State<Restaurantcontrollpage> {
   bool isLoading = true;
- List<Map<String, dynamic>> restaurants = [];
+  List<Map<String, dynamic>> restaurants = [];
   String? error;
 
   @override
@@ -32,17 +32,20 @@ class _RestaurantcontrollpageState extends State<Restaurantcontrollpage> {
         throw Exception("Failed to load user token");
       }
       final data = await service.getRestaurantsByCNPJ(cnpj);
-      if(data.containsKey('error')){
+
+      if (data.containsKey('error')) {
         setState(() {
           error = data['error'];
           isLoading = false;
-          return;
         });
-      }else{
+      } else if (data.containsKey('restaurants') &&
+          data['restaurants'] is List) {
         setState(() {
-          restaurants = data['restaurants'];
+          restaurants = List<Map<String, dynamic>>.from(data['restaurants']);
           isLoading = false;
         });
+      } else {
+        throw Exception("Formato inesperado de resposta do servidor");
       }
     } catch (e) {
       setState(() {
@@ -59,9 +62,10 @@ class _RestaurantcontrollpageState extends State<Restaurantcontrollpage> {
         if (data != null) {
           final token = jsonDecode(data);
           Map<String, dynamic> json = JwtDecoder.decode(token['token']);
-          return json['cpfCnpj'];
-        } else if (data == null) {
-          throw Exception("Failed to load user ");
+          print(json['cpfCnpj']);
+          return json['cpfCnpj']!; // Asegura que o valor não seja nulo
+        } else {
+          throw Exception("Failed to load user token");
         }
       } else {
         final storage = FlutterSecureStorage();
@@ -69,8 +73,8 @@ class _RestaurantcontrollpageState extends State<Restaurantcontrollpage> {
         if (data != null) {
           final token = jsonDecode(data);
           Map<String, dynamic> json = JwtDecoder.decode(token['token']);
-          return json['cpfCnpj'];
-        } else if (data == null) {
+          return json['cpfCnpj']!; // Asegura que o valor não seja nulo
+        } else {
           throw Exception("Failed to load user token");
         }
       }
@@ -78,7 +82,56 @@ class _RestaurantcontrollpageState extends State<Restaurantcontrollpage> {
       print(e);
       return null;
     }
-    return null;
+  }
+
+  void updateOccupancy(String cnpj, String nome, int newOccupancy) async {
+    try {
+      final service = Restaurantservice();
+      print('CNPJ: $cnpj, Nome: $nome, Ocupação: $newOccupancy');
+      await service.updateOccupancy(cnpj, nome, newOccupancy);
+      loadRestaurants();
+    } catch (e) {
+      setState(() {
+        error = "Erro ao atualizar a ocupação: $e";
+      });
+    }
+  }
+
+  void showUpdateOccupancyDialog(
+      String cnpj, String nome, int currentOccupancy) {
+    final TextEditingController occupancyController =
+        TextEditingController(text: currentOccupancy.toString());
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Atualizar Ocupação"),
+          content: TextField(
+            controller: occupancyController,
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(labelText: "Nova ocupação"),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancelar"),
+            ),
+            TextButton(
+              onPressed: () {
+                final newOccupancy = int.tryParse(occupancyController.text);
+                if (newOccupancy != null) {
+                  updateOccupancy(
+                      cnpj, nome, newOccupancy); // Passa cnpj e nome agora
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text("Atualizar"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -108,20 +161,29 @@ class _RestaurantcontrollpageState extends State<Restaurantcontrollpage> {
                     final restaurant = restaurants[index];
                     return Card(
                       child: ListTile(
-                        title: Text(restaurant['name']),
-                        subtitle: Text("Categoria: ${restaurant['category']}"),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.edit),
+                        title: Text(restaurant['name'] ?? 'Sem nome'),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                                "Categoria: ${restaurant['category'] ?? 'N/A'}"),
+                            Text("Endereço: ${restaurant['address'] ?? 'N/A'}"),
+                            Text("CEP: ${restaurant['cep'] ?? 'N/A'}"),
+                            Text(
+                                "Ocupação Atual: ${restaurant['atualOcupancy'] ?? 'N/A'}"),
+                            Text(
+                                "Ocupação Máxima: ${restaurant['maxOcupancy'] ?? 'N/A'}"),
+                          ],
+                        ),
+                        trailing: ElevatedButton(
                           onPressed: () {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) => EditRestaurantPage(
-                            //       restaurantId: restaurant['id'],
-                            //     ),
-                            //   ),
-                            // );
+                            showUpdateOccupancyDialog(
+                              restaurant['CNPJ'] ?? '', // Passando CNPJ
+                              restaurant['name'] ?? '', // Passando nome
+                              restaurant['currentOccupancy'] ?? 0,
+                            );
                           },
+                          child: const Text("Atualizar Ocupação"),
                         ),
                       ),
                     );

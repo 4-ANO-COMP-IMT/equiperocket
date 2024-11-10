@@ -8,7 +8,7 @@ const router = Router();
 router.get("/restaurants:id",getEateryById);
 router.post("/restaurants",getEatery );
 router.get('/restaurants/nearby', getEateryNearby);
-router.post('/restaurants/:id/occupancy',updateOcuancy );
+router.post('/restaurants/occupancy',updateOcuancy );
 router.post('/restaurants/add', addEatery);
 router.post('/restaurants/cnpj', getEateryByCNPJ);
 

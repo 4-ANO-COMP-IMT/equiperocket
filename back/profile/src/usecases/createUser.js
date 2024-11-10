@@ -7,7 +7,7 @@ async function createUser(profileData){
     console.log("createUser here");
     try {
         const exists = await profile.findOne({cpf: profileData.cpf});
-      
+        console.log(exists);
         if(!profileData.cpf){
             throw new Error("CPF não informado");
         }

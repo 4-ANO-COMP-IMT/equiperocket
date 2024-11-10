@@ -41,8 +41,8 @@ class _HomePageState extends State<HomePage> {
           'name': restaurant['name'] ?? 'Nome desconhecido',
           'category': restaurant['category'] ?? 'Categoria desconhecida',
           'address': restaurant['address'] ?? 'Endereço desconhecido',
-          'currentOccupancy': restaurant['currentOccupancy'] ?? 0,
-          'maxOccupancy': restaurant['maxOccupancy'] ?? 0,
+          'currentOccupancy': restaurant['atualOcupancy'] ?? 0,
+          'maxOccupancy': restaurant['maxOcupancy'] ?? '',
         };
       }).toList();
 

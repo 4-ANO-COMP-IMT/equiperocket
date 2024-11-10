@@ -143,20 +143,20 @@ class _ProfilePageState extends State<ProfilePage> {
                     ? user.cpf 
                     : user.cnpj.isNotEmpty ? user.cnpj : "Documento não disponível"),
                 const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    // Redireciona para a página de atualização de perfil
-                    // Get.to(() => const UpdateProfileScreen());
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF8BF337),
-                    shape: const StadiumBorder(),
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 20),
-                  ),
-                  child: const Text('Editar Perfil',
-                      style: TextStyle(color: Colors.white)),
-                ),
+                // ElevatedButton(
+                //   onPressed: () {
+                //     // Redireciona para a página de atualização de perfil
+                //     // Get.to(() => const UpdateProfileScreen());
+                //   },
+                //   style: ElevatedButton.styleFrom(
+                //     backgroundColor: const Color(0xFF8BF337),
+                //     shape: const StadiumBorder(),
+                //     padding: const EdgeInsets.symmetric(
+                //         vertical: 10, horizontal: 20),
+                //   ),
+                //   child: const Text('Editar Perfil',
+                //       style: TextStyle(color: Colors.white)),
+                // ),
                 const SizedBox(height: 20),
                 Divider(color: Colors.grey),
                 const SizedBox(height: 10),

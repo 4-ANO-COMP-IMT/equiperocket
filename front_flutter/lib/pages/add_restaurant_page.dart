@@ -15,7 +15,7 @@ class _AddRestaurantPageState extends State<AddRestaurantPage> {
   final nameController = TextEditingController();
   final categoryController = TextEditingController();
   final cepController = TextEditingController();
-  final maxOccupancyController = TextEditingController();
+  final maxOcupancyController = TextEditingController();
   final numberController = TextEditingController();
   final branchNameController = TextEditingController();
   String? cnpj;
@@ -38,11 +38,11 @@ class _AddRestaurantPageState extends State<AddRestaurantPage> {
     return;
   }
 
-  int? maxOccupancy;
+  int? maxOcupancy;
   int? number;
 
   try {
-    maxOccupancy = int.tryParse(maxOccupancyController.text);
+    maxOcupancy = int.tryParse(maxOcupancyController.text);
     number = int.tryParse(numberController.text);
   } catch (e) {
     setState(() {
@@ -52,7 +52,7 @@ class _AddRestaurantPageState extends State<AddRestaurantPage> {
   }
 
   
-  if (maxOccupancy == null || maxOccupancy == 0 || number == null || number == 0) {
+  if (maxOcupancy == null || maxOcupancy == 0 || number == null || number == 0) {
     setState(() {
       error = "Capacidade e número devem ser valores válidos!";
     });
@@ -66,6 +66,7 @@ class _AddRestaurantPageState extends State<AddRestaurantPage> {
         final token = jsonDecode(data);
         Map<String, dynamic> json = JwtDecoder.decode(token['token']);
         cnpj = json['cpfCnpj'];
+        print(cnpj);
       } else if (data == null) {
         throw Exception("Failed to load user ");
       }
@@ -81,16 +82,16 @@ class _AddRestaurantPageState extends State<AddRestaurantPage> {
         }
     }
     final restaurantData = {
-      'id': '',
       'name': name,
       'category': category,
       'cep': cep,
-      'maxOccupancy': maxOccupancy,
+      'maxOcupancy': maxOcupancy,
       'number': number,
       'branchName': branchName,
       'cnpj': cnpj,
     };
-
+    print(restaurantData);
+    
     final service = Restaurantservice();
     await service.addRestaurant(restaurantData);
     if (mounted) {
@@ -131,7 +132,7 @@ class _AddRestaurantPageState extends State<AddRestaurantPage> {
               decoration: InputDecoration(labelText: 'CEP'),
             ),
             TextField(
-              controller: maxOccupancyController,
+              controller: maxOcupancyController,
               decoration: InputDecoration(labelText: 'Capacidade Máxima'),
               keyboardType: TextInputType.number,
             ),

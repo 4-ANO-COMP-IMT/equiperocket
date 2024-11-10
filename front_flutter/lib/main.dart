@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => MyAppState(),
       child: MaterialApp(
-        title: 'Flutter Front',
+        title: 'SpotSoftware',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           useMaterial3: true,
