@@ -26,3 +26,17 @@ export async function getName(name){
         return error.message;   
     }
 };
+
+export async function getCNPJ(CNPJ){
+    try {
+        const eatery = await Eatery.find({CNPJ: CNPJ});
+        if(eatery.length === 0){
+            return null;
+        }
+        
+        return eatery;
+    } catch (error) {
+        return error.message;   
+    }
+}
+

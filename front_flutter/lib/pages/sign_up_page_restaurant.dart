@@ -2,32 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:front_flutter/pages/logInPage.dart';
 import 'package:front_flutter/services/userService.dart';
 
-class SignUpPage extends StatefulWidget {
+class SignUpResPage extends StatefulWidget {
   @override
-  State<SignUpPage> createState() => _SignUpPageState();
+  State<SignUpResPage> createState() => _SignUpPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _SignUpPageState extends State<SignUpResPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController(); 
   final nameController = TextEditingController();
-  final cpfController = TextEditingController();
+  final cnpjController = TextEditingController();
   final emailConfirmController = TextEditingController();
   bool acceptTerms = false;
   String error = '';
 
-  Future<void> handleSingUp() async{
+  void handleSingUp(){
     final email = emailController.text;
     final password = passwordController.text;
     final name = nameController.text;
-    final cpf = cpfController.text;
+    final cnpj = cnpjController.text;
     final emailConfirm = emailConfirmController.text;
 
     final emailRegex = RegExp(r'\S+@\S+\.\S+'); // email@email.com
-    final cpfRegex = RegExp(r'^[0-9]{3}\.[0-9]{3}\.[0-9]{3}-[0-9]{2}$'); // 000.000.000-00
+    final cnpjRegex = RegExp(r'^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$'); // XX.XXX.XXX/XXXX-XX
     final passwordRegex = RegExp(r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$'); // Senha123 
     
-    if(email.isEmpty || password.isEmpty || name.isEmpty || cpf.isEmpty || emailConfirm.isEmpty){
+    if(email.isEmpty || password.isEmpty || name.isEmpty || cnpj.isEmpty || emailConfirm.isEmpty){
       setState(() {
         error = 'Preencha todos os campos';
       });
@@ -42,9 +42,9 @@ class _SignUpPageState extends State<SignUpPage> {
         error = 'Email inválido';
       });
       return;
-    }else if(!cpfRegex.hasMatch(cpf)){
+    }else if(!cnpjRegex.hasMatch(cnpj)){
       setState(() {
-        error = 'CPF inválido';
+        error = 'CNPJ inválido';
       });
       return;
     }else if(!passwordRegex.hasMatch(password)){
@@ -79,11 +79,11 @@ class _SignUpPageState extends State<SignUpPage> {
       name: nameController.text,
       email: emailController.text,
       password: passwordController.text,
-      cpf: cpfController.text,
-      cnpj: '',
+      cnpj: cnpjController.text,
+      cpf: '',
     );
     
-    service.signUp();
+    service.signUpRestaurant();
   }
 
   @override
@@ -116,9 +116,9 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
             ),
             TextField(
-              controller: cpfController,
+              controller: cnpjController,
               decoration: InputDecoration(
-                labelText: 'CPF',
+                labelText: 'CNPJ',
               ),
             ),
             TextField(

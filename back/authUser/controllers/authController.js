@@ -5,14 +5,14 @@ const {generateToken} = require("../utils/tokenUtils.js");
 const {subscribeToEvent} = require("../common/subscriber.js");
 const {publishEvent} = require("../common/publisher.js");
 
-async function initSubscriber(){
-    subscribeToEvent('response.user', (message) => {
-        console.log('User created event received:', message);
+// async function initSubscriber(){
+//     subscribeToEvent('response.user', (message) => {
+//         console.log('User created event received:', message);
         
-    });
-}
+//     });
+// }
 
-initSubscriber();
+// initSubscriber();
 
 
 async function authUser(req, res){
@@ -21,9 +21,12 @@ async function authUser(req, res){
         let user = new User();
         user.email = email;
         user.password = password;
-        let isAuthenticated = await signIn(user);
-        if (isAuthenticated === true){
-            const token = generateToken(user);
+
+        let authResponse = await signIn(user);
+        if (authResponse){
+            const { data, userType } = authResponse;
+            const cpfCnpj = data.cpf || data.CNPJ;
+            const token = generateToken({ email,password ,cpfCnpj, userType });
             await publishEvent("auth.status", 
                 JSON.stringify({ email, token, userType: user.userType }));
             return res.status(200).json({ token, message: "Usuário logado!" });

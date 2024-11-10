@@ -18,7 +18,8 @@ const eaterySchema = new mongoose.Schema({
     branchName:{
         type: String,
         unique: true
-    }
+    },
+    atualOcupancy: Number,
 });
 
 eaterySchema.index({location: '2dsphere'});

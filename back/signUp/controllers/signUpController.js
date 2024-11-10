@@ -13,11 +13,11 @@ async function postUser(req, res){
         const email = req.body.email;
         const password = req.body.password;
         const name = req.body.name; 
-        const CPF = req.body.CPF; 
+        const cpf = req.body.cpf; 
         let user = {email:email, 
             password:password,
             name:name,
-            CPF:CPF
+            cpf:cpf
         };
         const result = await signUp(user);
         if (result){
@@ -47,6 +47,7 @@ async function postRestaurant(req, res){
         const result = await signUp(user);
         if (result){
             await publishEvent('restaurant.created', JSON.stringify(user));
+            console.log(JSON.stringify(user));
             return res.send("Usuário criado!").status(201);
         }else{
             await publishEvent('restaurant.exists', "Usuário já existe!");

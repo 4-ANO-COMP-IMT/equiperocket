@@ -4,9 +4,8 @@ import { verifyToken } from "../utils/tokenUtils.js";
 
 
 const TIMEOUT_DURATION = 5000;
-async function getProfile(email,token){
+async function getProfile(token){
     try {
-        console.log(email,token)
         const timeout = new Promise((_, reject) => 
             setTimeout(() => reject(new Error('Tempo de espera excedido.')), TIMEOUT_DURATION)
         );
@@ -21,9 +20,11 @@ async function getProfile(email,token){
                         }
                         const verify = verifyToken(token);
                         console.log('Token verificado:', verify);
+                        const email = verify.email;
                         if (verify) {
                             const user = await getUser(email);
                             console.log(user);
+
                             resolve(user);
                         } else {
                             reject(new Error('Usuário não autenticado.'));
