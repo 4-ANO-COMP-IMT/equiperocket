@@ -14,6 +14,11 @@ O SpotSoftware é uma solução inovadora que permite verificar a lotação de r
 - **Matheus Igino Machado** - RA: 20.01629-8
 - **Larissa Navarro Pizarro** - RA: 19.02028-7
 
+
+## Link do video da parte 2: 
+- [video](https://youtu.be/nc3vCI9a3ZE)
+
+
 ## Pré-requisitos
 
 Antes de iniciar o projeto, é necessário instalar o RabbitMQ. Siga as instruções no link abaixo para realizar a instalação:
