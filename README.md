@@ -16,7 +16,7 @@ O SpotSoftware é uma solução inovadora que permite verificar a lotação de r
 
 
 ## Link do video da parte 2: 
-- [video](https://youtu.be/nc3vCI9a3ZE)
+- [video](https://youtu.be/FdsDTorKCS8)
 
 
 ## Pré-requisitos
